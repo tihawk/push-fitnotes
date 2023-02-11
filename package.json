@@ -17,6 +17,18 @@
     "email": "blagoeffkp@gmail.com"
   },
   "license": "MIT",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,md,css,jsx,ts,tsx}": [
+      "prettier --trailing-comma es5 --tab-width 2 --bracket-spacing --no-semi --single-quote --write",
+      "git add"
+    ],
+    "*.{js,css,md}": "prettier --write"
+  },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.5",
     "@electron-forge/maker-deb": "^6.0.5",
@@ -32,7 +44,10 @@
     "eslint": "^8.33.0",
     "eslint-plugin-import": "^2.27.5",
     "fork-ts-checker-webpack-plugin": "^7.3.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.1",
     "node-loader": "^2.0.0",
+    "prettier": "^2.8.4",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
