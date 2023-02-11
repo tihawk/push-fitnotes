@@ -26,6 +26,66 @@
  * ```
  */
 
-import './index.css';
+import './index.min.css'
+import { MainPage } from './main-page'
+import { WorkoutT } from './util/interfaces'
+customElements.define('workouts-wrapper', MainPage)
+import 'materialize-css'
 
-console.log('👋 This message is being logged by "renderer.js", included via webpack');
+var workouts: WorkoutT[] = [
+  {
+    date: new Date(),
+    exercises: [
+      {
+        fitnotesName: 'Benchpress',
+        sets: [
+          {
+            reps: 6,
+            weight: 57.5,
+            time: 1,
+            restTime: 2.5,
+          },
+        ],
+      },
+      {
+        fitnotesName: 'Benchpress',
+        sets: [
+          {
+            reps: 5,
+            weight: 55,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    date: new Date(),
+    exercises: [
+      {
+        fitnotesName: 'Benchpress',
+        sets: [
+          {
+            reps: 7,
+            weight: 57.5,
+          },
+        ],
+      },
+      {
+        fitnotesName: 'Benchpress',
+        sets: [
+          {
+            reps: 6,
+            weight: 57.5,
+          },
+        ],
+      },
+    ],
+  },
+]
+
+const workoutsEl = new MainPage(workouts)
+document.body.appendChild(workoutsEl)
+
+console.log(
+  '👋 This message is being logged by "renderer.js", included via webpack'
+)
