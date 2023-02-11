@@ -8,8 +8,8 @@ rules.push({
   use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
 })
 
-// @ts-ignore
 plugins.push(
+  // @ts-ignore
   new CopyWebpackPlugin({
     patterns: [
       {
