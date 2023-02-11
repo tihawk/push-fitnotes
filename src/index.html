@@ -5,9 +5,11 @@
     <title>Hello World!</title>
 
   </head>
-  <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+  <body class="grey darken-4">
+    <div class="container white-text">
+      <h1>Workouts</h1>
+      <h6>Convert your workouts to Garmin's <code>.fit</code> format, and upload them individually, or in bulk.</h6>
+    </div>
   </body>
   <template id="container-template">
     <link rel="stylesheet" href="./index.min.css">
@@ -17,13 +19,13 @@
   <template id="workout-template">
     <form action="#">
       <div class="card purple darken-4 z-depth-4">
-        <div class="card-content white-text">
+        <div class="card-content">
           <div class="row">
             <div class="col s12">
               <p>
                 <label>
                   <input type="checkbox" />
-                  <span class="date"></span>
+                  <span class="date white-text"></span>
                 </label>
               </p>
             </div>
@@ -35,7 +37,7 @@
   </template>
 
   <template id="exercises-template">
-    <div class="white-text">
+    <div>
       <div class="row">
         <div class="col s12">
           <div class="divider"></div>
