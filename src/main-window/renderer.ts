@@ -26,10 +26,10 @@
  * ```
  */
 
-import './index.min.css'
-import { MainPage } from './main-page'
-import { WorkoutT } from './util/interfaces'
-customElements.define('workouts-wrapper', MainPage)
+import '../index.min.css'
+import { Workouts } from './workouts'
+import { WorkoutT } from '../util/interfaces'
+customElements.define('workouts-wrapper', Workouts)
 import 'materialize-css'
 
 var workouts: WorkoutT[] = [
@@ -83,7 +83,7 @@ var workouts: WorkoutT[] = [
   },
 ]
 
-const workoutsEl = new MainPage(workouts)
+const workoutsEl = new Workouts(workouts)
 document.body.appendChild(workoutsEl)
 
 console.log(

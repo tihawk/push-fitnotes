@@ -1,6 +1,6 @@
 import { WorkoutT } from '../util/interfaces'
 
-export class MainPage extends HTMLElement {
+export class Workouts extends HTMLElement {
   workouts: WorkoutT[]
   containerTemplateEl
   workoutTemplateEl
