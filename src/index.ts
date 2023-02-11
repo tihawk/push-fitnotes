@@ -27,21 +27,9 @@ const createWindow = (): void => {
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
-  // This will allow cdns from cloudflare
-  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: {
-        ...details.responseHeaders,
-        'Content-Security-Policy': [
-          "default-src 'unsafe-inline' 'unsafe-eval' 'self' https://cdnjs.cloudflare.com",
-        ],
-      },
-    })
-  })
-
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
-  // debug()
+  debug()
 }
 
 // This method will be called when Electron has finished

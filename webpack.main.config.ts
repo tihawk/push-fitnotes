@@ -1,6 +1,6 @@
-import type { Configuration } from 'webpack';
-
-import { rules } from './webpack.rules';
+import type { Configuration } from 'webpack'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
+import { rules } from './webpack.rules'
 
 export const mainConfig: Configuration = {
   /**
@@ -12,7 +12,16 @@ export const mainConfig: Configuration = {
   module: {
     rules,
   },
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: './garmin.config.json',
+        },
+      ],
+    }),
+  ],
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
   },
-};
+}
