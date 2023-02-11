@@ -44,7 +44,6 @@
     "eslint": "^8.33.0",
     "eslint-plugin-import": "^2.27.5",
     "fork-ts-checker-webpack-plugin": "^7.3.0",
-    "husky": "^8.0.3",
     "lint-staged": "^13.1.1",
     "node-loader": "^2.0.0",
     "prettier": "^2.8.4",
@@ -58,6 +57,7 @@
     "electron-rebuild": "^3.2.9",
     "electron-squirrel-startup": "^1.0.0",
     "garmin-connect": "^1.4.5",
+    "husky": "^4.3.8",
     "java": "^0.12.2",
     "node-java-maven": "^0.1.2"
   },
