@@ -23,7 +23,15 @@ export class CSVParser {
     const parser = fs
       .createReadStream(path.resolve(this.config.csvFilename))
       .pipe(parse({ columns: true }))
-      .on('data', (row: FitNotesCSVRowT) => {
+      .on('data', (row: any) => {
+        if (!this.isValidRow(row)) {
+          console.error('Not a valid csv row!')
+          throw new Error(
+            `Found an invalid row in csv: ${JSON.stringify(
+              row
+            )}. Cancelling CSV parsing.`
+          )
+        }
         const temp: WorkoutT = {
           date: new Date(row.Date),
           exercises: [
@@ -81,5 +89,9 @@ export class CSVParser {
     return data[workoutIndex].exercises.findIndex(
       (el) => el.fitnotesName === term.exercises[0].fitnotesName
     )
+  }
+
+  isValidRow(row: FitNotesCSVRowT): row is FitNotesCSVRowT {
+    return !!row.Date.match(/\d\d\d\d-\d\d-\d\d/).length && !!row.Exercise
   }
 }
