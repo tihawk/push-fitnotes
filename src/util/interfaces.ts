@@ -16,6 +16,11 @@ export interface CSVParserConfigI {
 }
 
 export type WorkoutT = {
+  meta: {
+    selected: boolean
+    converted: boolean
+    uploaded: boolean
+  }
   date: Date
   exercises: {
     fitnotesName: string

@@ -14,6 +14,7 @@ import { CSVParser } from './csv-parser'
 import { cwd } from 'process'
 import { CSV_DIR } from './util/constants'
 import { SweetAlertOptions } from 'sweetalert2'
+const { session } = require('electron')
 
 // a class to keep track of in-memory vars
 const localStorage = new LocalStorage()
@@ -39,6 +40,7 @@ const createWindow = (): void => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       // sandbox: false,
       // nodeIntegration: true // https://stackoverflow.com/questions/60227586/ipcrenderer-not-receiving-message-from-main-process
+      allowRunningInsecureContent: true,
     },
   })
   console.log(process.versions)
@@ -59,11 +61,16 @@ app.on('ready', () => {
   const menu = Menu.buildFromTemplate(getMenuTemplate())
   Menu.setApplicationMenu(menu)
 
-  // Check if csv parse workis
-  // debugParse()
-
-  // Check if java-node and garmin-connect work
-  // debug()
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "script-src-elem 'self' https://cdnjs.cloudflare.com 'unsafe-inline'",
+        ],
+      },
+    })
+  })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

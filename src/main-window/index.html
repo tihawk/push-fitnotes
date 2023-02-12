@@ -1,81 +1,81 @@
 <!DOCTYPE html>
 <html>
-  <head>            
-    <meta charset="UTF-8" />
-    <title>Push Fitnotes</title>
 
-  </head>
-  <body class="grey darken-4">
-    <div class="container white-text">
-      <h1>Workouts</h1>
-      <h6>Convert your workouts to Garmin's <code>.fit</code> format, and upload them individually, or in bulk.</h6>
-    </div>
-  </body>
-  <template id="container-template">
-    <div class="container"></div>
-  </template>
+<head>
+  <meta charset="UTF-8" />
+  <title>Push Fitnotes</title>
 
-  <template id="workout-template">
-    <form action="#">
-      <div class="card purple darken-4 z-depth-4">
-        <div class="card-content">
-          <div class="row">
-            <div class="col s12">
-              <p>
-                <label>
-                  <input type="checkbox" />
-                  <span class="date white-text"></span>
-                </label>
-              </p>
-            </div>
+</head>
+
+<body class="grey darken-4">
+  <div class="container white-text">
+    <h1>Workouts</h1>
+    <h6>Convert your workouts to Garmin's <code>.fit</code> format, and upload them individually, or in bulk.</h6>
+  </div>
+</body>
+<template id="container-template">
+  <div class="container"></div>
+</template>
+
+<template id="workout-template">
+  <ul class="collapsible">
+    <li>
+      <div class="collapsible-header purple darken-4">
+        <div style="display:flex;" class="col s12">
+          <div class="valign-wrapper">
+            <label>
+              <input class="select-workout" type="checkbox" />
+              <span style="padding-right:35px;" class="date white-text"></span>
+            </label>
           </div>
-          <div class="exercises"></div>
+          <button class="btn waves-effect waves-light deep-purple" name="convert">Convert</button>
+          <button class="btn waves-effect waves-light purple accent-2" name="upload">Upload</button>
         </div>
       </div>
-    </form>
-  </template>
+      <div class="collapsible-body purple darken-4">
+        <div class="exercises"></div>
+      </div>
+    </li>
+  </ul>
+</template>
 
-  <template id="exercises-template">
-    <div>
-      <div class="row">
-        <div class="col s12">
-          <div class="divider"></div>
-        </div>
+<template id="exercises-template">
+  <div>
+    <div class="row">
+      <div class="input-field col s6">
+        <label class="active">FitNotes name</label>
+        <input class="csvName white-text" value="" />
       </div>
-      <div class="row">
-        <div class="input-field col s6">
-          <label class="active">FitNotes name</label>
-          <input class="csvName white-text" value="" /> 
-        </div>
-        <div class="input-field col s6">
-          <label class="active">Garmin name</label>
-          <input class="fitName white-text" value="" />
-        </div>
-      </div>
-      <div class="sets row"></div>
-    </div>
-  </template>
-
-  <template id="sets-template">
-    <div class="col s12">
-      <div class="row">
-        <div class="input-field col s3">
-          <label class="active">Weight</label>
-          <input type="number" class="weight white-text" min="0" step="0.5" />
-        </div>
-        <div class="input-field col s3">
-          <label class="active">Reps</label>
-          <input type="number" class="reps white-text" min="1" />
-        </div>
-        <div class="input-field col s3">
-          <label class="active">Time</label>
-          <input type="number" class="time white-text" min="0" step="0.1" />
-        </div>
-        <div class="input-field col s3">
-          <label class="active">Rest Time</label>
-          <input type="number" class="rest-time white-text" min="0" step="0.1" />
-        </div>
+      <div class="input-field col s6">
+        <label class="active">Garmin name</label>
+        <input class="fitName white-text" value="" />
       </div>
     </div>
-  </template>
+    <div class="sets row"></div>
+  </div>
+</template>
+
+<template id="sets-template">
+  <div class="col s12">
+    <div class="row">
+      <div class="input-field col s3">
+        <label class="active">Weight</label>
+        <input type="number" class="weight white-text" min="0" step="0.5" />
+      </div>
+      <div class="input-field col s3">
+        <label class="active">Reps</label>
+        <input type="number" class="reps white-text" min="1" />
+      </div>
+      <div class="input-field col s3">
+        <label class="active">Time</label>
+        <input type="number" class="time white-text" min="0" step="0.1" />
+      </div>
+      <div class="input-field col s3">
+        <label class="active">Rest Time</label>
+        <input type="number" class="rest-time white-text" min="0" step="0.1" />
+      </div>
+    </div>
+  </div>
+</template>
+
 </html>

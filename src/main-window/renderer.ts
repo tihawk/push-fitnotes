@@ -31,6 +31,12 @@ import { Workouts } from './workouts'
 import { WorkoutT } from '../util/interfaces'
 import 'materialize-css'
 import Swal from 'sweetalert2'
+import M from 'materialize-css'
+
+document.addEventListener('DOMContentLoaded', function () {
+  console.log('hi')
+  initCollapsible()
+})
 
 let workouts: WorkoutT[]
 
@@ -38,8 +44,14 @@ window.electronAPI.onLoadedCSVData((e, message) => {
   workouts = message.data
   const workoutsEl = new Workouts(workouts)
   document.body.appendChild(workoutsEl)
+  initCollapsible()
 })
 
 window.electronAPI.onDisplayMessage((e, message) => {
   Swal.fire(message)
 })
+
+export function initCollapsible() {
+  var elems = document.querySelectorAll('.collapsible')
+  var instances = M.Collapsible.init(elems, { accordion: false })
+}

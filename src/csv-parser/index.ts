@@ -32,6 +32,11 @@ export class CSVParser {
           )
         }
         const temp: WorkoutT = {
+          meta: {
+            selected: false,
+            converted: false,
+            uploaded: false,
+          },
           date: new Date(row.Date),
           exercises: [
             {

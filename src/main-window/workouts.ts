@@ -1,4 +1,5 @@
 import { WorkoutT } from '../util/interfaces'
+import { initCollapsible } from './renderer'
 
 export class Workouts extends HTMLElement {
   workouts: WorkoutT[]
@@ -16,7 +17,7 @@ export class Workouts extends HTMLElement {
   }
 
   render() {
-    // Clean shadow
+    // Clean element
     this.innerHTML = ''
     // Append container
     const containerNode = this.containerTemplateEl.content.cloneNode(true)
@@ -54,6 +55,12 @@ class WorkoutElement extends HTMLElement {
     workoutEl.querySelector('span.date').innerHTML = new Date(
       this.workout.date
     ).toLocaleDateString('de')
+    const selectWorkoutCheckbox: HTMLInputElement = workoutEl.querySelector(
+      'input.select-workout'
+    )
+    selectWorkoutCheckbox.checked = this.workout.meta.selected
+    selectWorkoutCheckbox.onchange = (e) =>
+      this.updateCheckbox(e, this.workout.meta, 'selected', this)
 
     // Append exercises for each workout
     const exercisesContainerEl = workoutEl.querySelector('div.exercises')
@@ -62,6 +69,8 @@ class WorkoutElement extends HTMLElement {
       exercisesContainerEl.appendChild(exerciseEl)
     }
   }
+
+  updateCheckbox = updateCheckbox
 }
 
 class ExerciseElement extends HTMLElement {
@@ -147,6 +156,16 @@ function updateValue(e: Event, object, key, ref) {
   // @ts-ignore
   object[key] = e.target.value
   ref.render()
+
+  initCollapsible()
+}
+
+function updateCheckbox(e: Event, object, key, ref) {
+  // @ts-ignore
+  object[key] = e.target.checked
+  ref.render()
+
+  initCollapsible()
 }
 
 customElements.define('workouts-wrapper', Workouts)
