@@ -76,6 +76,19 @@ export class Converter {
     // return activities
   }
 
+  static convertToFitActivities(csvString): any {
+    const javaByteArray = java.newArray(
+      'byte',
+      csvString.split('').map((c, i) => java.newByte(csvString.charCodeAt(i)))
+    )
+    const activities = java.callStaticMethodSync(
+      'com.developination.fitnotes2fit.FitNotesParser.FitNotesParser',
+      'parseFileNotesIntoActivities',
+      javaByteArray
+    )
+    return activities
+  }
+
   writeActivitiesToFitFilesSync(activities): string[] {
     const numOfActivities = activities.sizeSync()
     this.logger('numOfActivities:', numOfActivities)

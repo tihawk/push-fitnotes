@@ -227,9 +227,13 @@ function convertCSV() {
   } as SweetAlertOptions)
 }
 
-function handleConvertWorkout(event, message: WorkoutT) {
-  console.log(message)
-  return 'bs'
+async function handleConvertWorkout(event, message: WorkoutT) {
+  const csvString = CSVParser.flattenData([message])
+  const converter = new Converter({ csvFilePath: '' }, console.log)
+  const activities = Converter.convertToFitActivities(csvString)
+  const filenames = converter.writeActivitiesToFitFilesSync(activities)
+
+  return filenames[0]
 }
 
 function handleUploadWorkout(event, message: WorkoutT) {

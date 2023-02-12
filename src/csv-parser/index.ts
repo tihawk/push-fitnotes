@@ -1,8 +1,10 @@
 import { parse } from 'csv-parse'
+// const stringify = require('csv-stringify/lib/sync')
+import { stringify } from 'csv-stringify/sync'
 import path from 'path'
 import fs from 'fs'
 import { WorkoutT, FitNotesCSVRowT, CSVParserConfigI } from '../util/interfaces'
-import { timeStringToFloatMinutes } from '../util'
+import { floatMinutesTommss, timeStringToFloatMinutes } from '../util'
 import { finished } from 'stream/promises'
 import { CSV_DIR } from '../util/constants'
 
@@ -100,5 +102,42 @@ export class CSVParser {
     return !!row.Date.match(/\d\d\d\d-\d\d-\d\d/).length && !!row.Exercise
   }
 
-  async flattenData()
+  static flattenData(workouts: WorkoutT[]): string {
+    const data: FitNotesCSVRowT[] = []
+
+    for (const workout of workouts) {
+      for (const exercise of workout.exercises) {
+        for (const set of exercise.sets) {
+          const temp: FitNotesCSVRowT = {
+            Date: workout.date.toISOString().split('T')[0],
+            Exercise: exercise.fitnotesName,
+            Category: exercise.fitnotesCategory,
+            'Weight (kgs)': set.weight,
+            Reps: set.reps,
+            Time: set.time ? floatMinutesTommss(set.time) : '',
+            'Distance Unit': '',
+            Comment: '',
+            Distance: undefined,
+          }
+
+          data.push(temp)
+        }
+      }
+    }
+
+    return stringify(data, {
+      header: true,
+      columns: {
+        Date: 'Date',
+        Exercise: 'Exercise',
+        Category: 'Category',
+        'Weight (kgs)': 'Weight (kgs)',
+        Reps: 'Reps',
+        Distance: 'Distance',
+        'Distance Unit': 'Distance Unit',
+        Time: 'Time',
+        Comment: 'Comment',
+      },
+    })
+  }
 }
