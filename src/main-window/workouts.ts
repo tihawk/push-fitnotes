@@ -2,28 +2,117 @@ import { WorkoutT } from '../util/interfaces'
 
 export class Workouts extends HTMLElement {
   workouts: WorkoutT[]
-  containerTemplateEl
-  workoutTemplateEl
-  exercisesTemplateEl
-  setsTemplateEl
-  shadow
-
+  containerTemplateEl: HTMLTemplateElement
   constructor(workouts) {
     super()
 
     this.workouts = workouts
-    this.shadow = this.attachShadow({ mode: 'open' })
-
-    // Get templates
+    // Get template
     this.containerTemplateEl = document.getElementById(
       'container-template'
     ) as HTMLTemplateElement
+
+    this.render()
+  }
+
+  render() {
+    // Clean shadow
+    this.innerHTML = ''
+    // Append container
+    const containerNode = this.containerTemplateEl.content.cloneNode(true)
+    this.appendChild(containerNode)
+
+    // Append workouts
+    const containerEl = this.lastElementChild
+    for (const workout of this.workouts) {
+      const workoutEl = new WorkoutElement(workout)
+      containerEl.appendChild(workoutEl)
+    }
+  }
+}
+
+class WorkoutElement extends HTMLElement {
+  workoutTemplateEl: HTMLTemplateElement
+  workout: WorkoutT
+  constructor(workout: WorkoutT) {
+    super()
+
+    this.workout = workout
     this.workoutTemplateEl = document.getElementById(
       'workout-template'
     ) as HTMLTemplateElement
+
+    this.render()
+  }
+
+  render() {
+    this.innerHTML = ''
+    const workoutNode = this.workoutTemplateEl.content.cloneNode(true)
+    this.appendChild(workoutNode)
+    const workoutEl = this.lastElementChild
+
+    workoutEl.querySelector('span.date').innerHTML = new Date(
+      this.workout.date
+    ).toLocaleDateString('de')
+
+    // Append exercises for each workout
+    const exercisesContainerEl = workoutEl.querySelector('div.exercises')
+    for (const exercise of this.workout.exercises) {
+      const exerciseEl = new ExerciseElement(exercise)
+      exercisesContainerEl.appendChild(exerciseEl)
+    }
+  }
+}
+
+class ExerciseElement extends HTMLElement {
+  exercisesTemplateEl: HTMLTemplateElement
+  exercise: WorkoutT['exercises']['0']
+  constructor(exercise: WorkoutT['exercises']['0']) {
+    super()
+
+    this.exercise = exercise
     this.exercisesTemplateEl = document.getElementById(
       'exercises-template'
     ) as HTMLTemplateElement
+
+    this.render()
+  }
+
+  render() {
+    this.innerHTML = ''
+    const exercisesNode = this.exercisesTemplateEl.content.cloneNode(true)
+    this.appendChild(exercisesNode)
+    const exerciseEl = this.lastElementChild
+
+    const csvNameEl: HTMLInputElement =
+      exerciseEl.querySelector('input.csvName')
+    csvNameEl.value = this.exercise.fitnotesName
+    csvNameEl.onchange = (e) =>
+      this.updateValue(e, this.exercise, 'fitnotesName', this)
+    const fitNameEl: HTMLInputElement =
+      exerciseEl.querySelector('input.fitName')
+    fitNameEl.value = this.exercise.fitName?.toString()
+    fitNameEl.onchange = (e) =>
+      this.updateValue(e, this.exercise, 'fitName', this)
+
+    // Append sets for each exercise
+    const setsContainerEl = exerciseEl.querySelector('div.sets')
+    for (const set of this.exercise.sets) {
+      const test = new SetElement(set)
+      setsContainerEl.appendChild(test)
+    }
+  }
+
+  updateValue = updateValue
+}
+
+class SetElement extends HTMLElement {
+  setsTemplateEl: HTMLTemplateElement
+  set: WorkoutT['exercises']['0']['sets']['0']
+  constructor(set: WorkoutT['exercises']['0']['sets']['0']) {
+    super()
+
+    this.set = set
     this.setsTemplateEl = document.getElementById(
       'sets-template'
     ) as HTMLTemplateElement
@@ -32,75 +121,35 @@ export class Workouts extends HTMLElement {
   }
 
   render() {
-    // Clean shadow
-    this.shadow.innerHTML = ''
-    // Append container
-    const containerNode = this.containerTemplateEl.content.cloneNode(true)
-    this.shadow.appendChild(containerNode)
-    const containerEl = this.shadow.lastElementChild
+    this.innerHTML = ''
+    const setsNode = this.setsTemplateEl.content.cloneNode(true)
+    this.appendChild(setsNode)
+    const setEl = this.lastElementChild
 
-    // Append workouts
-    for (const workout of this.workouts) {
-      const workoutNode = this.workoutTemplateEl.content.cloneNode(true)
-      containerEl.appendChild(workoutNode)
-      const workoutEl = containerEl.lastElementChild
-
-      workoutEl.querySelector('span.date').innerHTML = new Date(
-        workout.date
-      ).toLocaleDateString('de')
-      // Append exercises for each workout
-      const exercisesContainerEl = workoutEl.querySelector('div.exercises')
-      for (const exercise of workout.exercises) {
-        const exercisesNode = this.exercisesTemplateEl.content.cloneNode(true)
-        exercisesContainerEl.appendChild(exercisesNode)
-        const exerciseEl = exercisesContainerEl.lastElementChild
-
-        // const p = exerEl.querySelector('p')
-        // p.innerHTML = `${exercise.fitnotesName} but also known as ${exercise.fitName}`
-        const csvNameEl: HTMLInputElement =
-          exerciseEl.querySelector('input.csvName')
-        csvNameEl.value = exercise.fitnotesName
-        csvNameEl.onchange = (e) =>
-          this.updateValue(e, exercise, 'fitnotesName', this.workouts)
-        const fitNameEl: HTMLInputElement =
-          exerciseEl.querySelector('input.fitName')
-        fitNameEl.value = exercise.fitName?.toString()
-        fitNameEl.onchange = (e) =>
-          this.updateValue(e, exercise, 'fitName', this.workouts)
-
-        // Append sets for each exercise
-        const setsContainerEl = exerciseEl.querySelector('div.sets')
-        for (const set of exercise.sets) {
-          const setsNode = this.setsTemplateEl.content.cloneNode(true)
-          setsContainerEl.appendChild(setsNode)
-          const setEl = setsContainerEl.lastElementChild
-
-          const weightEl: HTMLInputElement = setEl.querySelector('input.weight')
-          weightEl.value = set.weight.toString()
-          weightEl.onchange = (e) =>
-            this.updateValue(e, set, 'weight', this.workouts)
-          const repsEl: HTMLInputElement = setEl.querySelector('input.reps')
-          repsEl.value = set.reps.toString()
-          repsEl.onchange = (e) =>
-            this.updateValue(e, set, 'reps', this.workouts)
-          const timeEl: HTMLInputElement = setEl.querySelector('input.time')
-          timeEl.value = set.time?.toString()
-          timeEl.onchange = (e) =>
-            this.updateValue(e, set, 'time', this.workouts)
-          const restTimeEl: HTMLInputElement =
-            setEl.querySelector('input.rest-time')
-          restTimeEl.value = set.restTime?.toString()
-          restTimeEl.onchange = (e) =>
-            this.updateValue(e, set, 'restTime', this.workouts)
-        }
-      }
-    }
+    const weightEl: HTMLInputElement = setEl.querySelector('input.weight')
+    weightEl.value = this.set.weight.toString()
+    weightEl.onchange = (e) => this.updateValue(e, this.set, 'weight', this)
+    const repsEl: HTMLInputElement = setEl.querySelector('input.reps')
+    repsEl.value = this.set.reps.toString()
+    repsEl.onchange = (e) => this.updateValue(e, this.set, 'reps', this)
+    const timeEl: HTMLInputElement = setEl.querySelector('input.time')
+    timeEl.value = this.set.time?.toString()
+    timeEl.onchange = (e) => this.updateValue(e, this.set, 'time', this)
+    const restTimeEl: HTMLInputElement = setEl.querySelector('input.rest-time')
+    restTimeEl.value = this.set.restTime?.toString()
+    restTimeEl.onchange = (e) => this.updateValue(e, this.set, 'restTime', this)
   }
 
-  updateValue(e: Event, object, key, more) {
-    // @ts-ignore
-    object[key] = e.target.value
-    console.log(more)
-    this.render()
-  }
+  updateValue = updateValue
 }
+
+function updateValue(e: Event, object, key, ref) {
+  // @ts-ignore
+  object[key] = e.target.value
+  ref.render()
+}
+
+customElements.define('workouts-wrapper', Workouts)
+customElements.define('workout-workout', WorkoutElement)
+customElements.define('workout-exercise', ExerciseElement)
+customElements.define('workout-set', SetElement)
