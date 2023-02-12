@@ -18,3 +18,8 @@ export function timeStringToFloatMinutes(time: string): number {
     : 0
   return hours * 60 + minutes + seconds / 60
 }
+
+export class LocalStorage {
+  csvPath
+  constructor() {}
+}

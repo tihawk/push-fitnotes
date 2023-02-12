@@ -18,12 +18,10 @@ export class CSVParser {
     this.logger = logger
   }
 
-  async parseData(filename: string): Promise<WorkoutT[]> {
+  async parseData(): Promise<WorkoutT[]> {
     const result: WorkoutT[] = []
     const parser = fs
-      .createReadStream(
-        path.resolve(cwd(), this.config.csvDir, this.config.csvFilename)
-      )
+      .createReadStream(path.resolve(this.config.csvFilename))
       .pipe(parse({ columns: true }))
       .on('data', (row: FitNotesCSVRowT) => {
         const temp: WorkoutT = {
