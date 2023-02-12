@@ -1,7 +1,6 @@
 import { parse } from 'csv-parse'
 import path from 'path'
 import fs from 'fs'
-import { cwd } from 'process'
 import { WorkoutT, FitNotesCSVRowT, CSVParserConfigI } from '../util/interfaces'
 import { timeStringToFloatMinutes } from '../util'
 import { finished } from 'stream/promises'

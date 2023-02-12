@@ -31,6 +31,7 @@ import { Workouts } from './workouts'
 import { WorkoutT } from '../util/interfaces'
 customElements.define('workouts-wrapper', Workouts)
 import 'materialize-css'
+import Swal from 'sweetalert2'
 // import { ipcRenderer } from 'electron'
 // const { ipcRenderer } = window.require('electron');
 
@@ -89,6 +90,10 @@ window.electronAPI.onLoadedCSVData((e, message) => {
   workouts = message.data
   const workoutsEl = new Workouts(workouts)
   document.body.appendChild(workoutsEl)
+})
+
+window.electronAPI.onDisplayMessage((e, message) => {
+  Swal.fire(message)
 })
 
 console.log(

@@ -8,11 +8,12 @@ import {
 } from 'electron'
 import { Converter } from './converter'
 import { GarminConnector } from './garmin-connector'
-import { isMac, LocalStorage } from './util'
+import { isMac, LocalStorage, sortAlphabetically } from './util'
 import path from 'path'
 import { CSVParser } from './csv-parser'
 import { cwd } from 'process'
 import { CSV_DIR } from './util/constants'
+import { SweetAlertOptions } from 'sweetalert2'
 
 // a class to keep track of in-memory vars
 const localStorage = new LocalStorage()
@@ -91,9 +92,19 @@ function getMenuTemplate(): (MenuItemConstructorOptions | MenuItem)[] {
       submenu: [
         {
           label: 'Load CSV',
-          click: selectCSV,
+          click: () => selectCSV(loadCSV),
         },
         isMac ? { role: 'close' } : { role: 'quit' },
+      ],
+    },
+    {
+      label: 'Tools',
+      submenu: [
+        {
+          label: 'Quick convert',
+          toolTip: 'Select a csv to directly convert to .fit files',
+          click: quickConvert,
+        },
       ],
     },
     {
@@ -143,20 +154,45 @@ function createAboutWindow() {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
-function debug() {
+// function debug() {
+//   const converter = new Converter(
+//     { csvFilename: 'FitNotes_Export_2023_02_08_19_56_10.csv' },
+//     console.log
+//   )
+//   const activities = converter.convertToFitActivities()
+//   const filenames = converter.writeActivitiesToFitFiles(activities)
+
+//   const uploader = new GarminConnector({}, console.log)
+//   uploader.logIntoGarminConnect().then(() => {
+//     for (const file of filenames) {
+//       uploader.uploadActivity(file)
+//     }
+//   })
+// }
+
+function convertCSV() {
+  const csvFilePath = localStorage.csvPath
+  if (!csvFilePath) {
+    console.error('No valid CSV target!')
+    return
+  }
+
   const converter = new Converter(
-    { csvFilename: 'FitNotes_Export_2023_02_08_19_56_10.csv' },
+    {
+      csvFilename: csvFilePath,
+    },
     console.log
   )
-  const activities = converter.convertToFitActivities()
-  const filenames = converter.writeActivitiesToFitFiles(activities)
 
-  const uploader = new GarminConnector({}, console.log)
-  uploader.logIntoGarminConnect().then(() => {
-    for (const file of filenames) {
-      uploader.uploadActivity(file)
-    }
-  })
+  const activities = converter.convertToFitActivities()
+  const filenames = converter.writeActivitiesToFitFilesSync(activities)
+
+  mainWindow.webContents.send('display-message', {
+    title: 'Finished converting! The following files were created',
+    html: /* html */ `<p>${filenames
+      .sort(sortAlphabetically)
+      .join(',<br/>')}</p>`,
+  } as SweetAlertOptions)
 }
 
 function loadCSV() {
@@ -174,7 +210,7 @@ function loadCSV() {
   })
 }
 
-function selectCSV() {
+function selectCSV(callback) {
   dialog
     .showOpenDialog({
       defaultPath: path.resolve(cwd(), CSV_DIR),
@@ -186,11 +222,15 @@ function selectCSV() {
       if (!res.canceled) {
         if (res.filePaths.length) {
           localStorage.csvPath = res.filePaths[0]
-          loadCSV()
+          callback()
         }
       }
     })
     .catch((err) => {
       console.error(err)
     })
+}
+
+function quickConvert() {
+  selectCSV(convertCSV)
 }

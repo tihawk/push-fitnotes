@@ -23,3 +23,11 @@ export class LocalStorage {
   csvPath
   constructor() {}
 }
+
+export function sortAlphabetically(a, b) {
+  return a === b ? 0 : a < b ? -1 : 1
+}
+
+export function sortCounterAlphabetically(a, b) {
+  return a === b ? 0 : a > b ? -1 : 1
+}

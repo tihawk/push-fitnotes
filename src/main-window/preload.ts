@@ -5,4 +5,5 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electronAPI', {
   onLoadedCSVData: (callback) => ipcRenderer.on('loaded-csv-data', callback),
+  onDisplayMessage: (callback) => ipcRenderer.on('display-message', callback),
 })

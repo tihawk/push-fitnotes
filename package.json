@@ -62,7 +62,8 @@
     "husky": "^4.3.8",
     "java": "^0.12.2",
     "materialize-css": "^1.0.0",
-    "node-java-maven": "^0.1.2"
+    "node-java-maven": "^0.1.2",
+    "sweetalert2": "^11.7.1"
   },
   "overrides": {
     "nan": "github:jkleinsc/nan"
