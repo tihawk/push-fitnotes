@@ -9,13 +9,19 @@ import {
 } from 'electron'
 import { Converter } from './converter'
 import { GarminConnector } from './garmin-connector'
-import { isMac, LocalStorage, sortAlphabetically } from './util'
+import {
+  isMac,
+  LocalStorage,
+  sortAlphabetically,
+  sortCounterAlphabetically,
+} from './util'
 import path from 'path'
 import { CSVParser } from './csv-parser'
 import { cwd } from 'process'
 import { CSV_DIR } from './util/constants'
 import { SweetAlertOptions } from 'sweetalert2'
-import { WorkoutT } from './util/interfaces'
+import { MessageT, WorkoutT } from './util/interfaces'
+import { GarminConnect } from 'garmin-connect'
 
 // a class to keep track of in-memory vars
 const localStorage = new LocalStorage()
@@ -197,7 +203,7 @@ function loadCSV() {
   const csvParser = new CSVParser({ csvFilePath: csvFilePath }, console.log)
   csvParser.parseData().then((res) => {
     mainWindow.webContents.send('loaded-csv-data', {
-      data: res,
+      data: res.sort(sortCounterAlphabetically),
     })
   })
 }
@@ -222,18 +228,51 @@ function convertCSV() {
   } as SweetAlertOptions)
 }
 
-async function handleConvertWorkout(event, message: WorkoutT) {
+async function handleConvertWorkout(
+  event,
+  message: WorkoutT
+): Promise<MessageT> {
   const csvString = CSVParser.flattenData([message])
   const converter = new Converter({ csvFilePath: '' }, console.log)
   const activities = Converter.convertToFitActivities(csvString)
   const filenames = converter.writeActivitiesToFitFilesSync(activities)
 
-  return filenames[0]
+  return { success: true, message: filenames[0], data: filenames[0] }
 }
 
-function handleUploadWorkout(event, message: WorkoutT) {
-  console.log(message)
-  return message.meta.converted && message.meta.fitFilename
+async function handleUploadWorkout(
+  event,
+  message: WorkoutT
+): Promise<MessageT> {
+  if (!message.meta?.fitFilename) {
+    throw { success: false, message: 'No .fit file specified for upload!' }
+  }
+  const response: MessageT = { success: true, message: '' }
+  const connector = new GarminConnector({}, console.log)
+
+  const gc: GarminConnect | void = await connector
+    .logIntoGarminConnect()
+    .catch((err) => {
+      response.success = false
+      response.message = "Couldn't log into Garmin Connect"
+    })
+
+  try {
+    // login unsuccessful if no user hash
+    if (!gc || !gc.userHash) {
+      return { success: false, message: "Couldn't log into Garmin Connect" }
+    }
+  } catch (err) {
+    console.error(err)
+    return { success: false, message: "Couldn't log into Garmin Connect" }
+  }
+
+  await connector.uploadActivity(message.meta.fitFilename).catch((err) => {
+    response.success = false
+    response.message = 'Failed uploading file'
+  })
+
+  return response
 }
 
 // function debug() {

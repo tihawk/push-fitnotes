@@ -77,3 +77,9 @@ export type FitNotesCSVRowT = {
   Time: string
   Comment: string
 }
+
+export type MessageT = {
+  success: boolean
+  message: string
+  data?: any
+}

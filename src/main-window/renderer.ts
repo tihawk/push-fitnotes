@@ -28,7 +28,7 @@
 
 import '../index.min.css'
 import { Workouts } from './workouts'
-import { WorkoutT } from '../util/interfaces'
+import { MessageT, WorkoutT } from '../util/interfaces'
 import Swal from 'sweetalert2'
 import M from 'materialize-css'
 import 'material-icons'
@@ -56,19 +56,25 @@ export function initCollapsible() {
 }
 
 export async function convertWorkout(workout: WorkoutT): Promise<string> {
-  const success: string = await window.electronAPI.convertWorkout(workout)
+  const message: MessageT = await window.electronAPI.convertWorkout(workout)
   Swal.fire({
-    title: success ? 'Success!' : 'Failed!',
-    text: success && 'You can now upload your workout to Garmin Connect!',
+    icon: message.success ? 'success' : 'error',
+    title: message.success ? 'Success!' : 'Failed!',
+    text: message.success
+      ? 'You can now upload your workout to Garmin Connect!'
+      : message.message,
   })
-  return success
+  return message.data
 }
 
 export async function uploadWorkout(workout: WorkoutT): Promise<boolean> {
-  const success: boolean = await window.electronAPI.uploadWorkout(workout)
+  const message: MessageT = await window.electronAPI.uploadWorkout(workout)
   Swal.fire({
-    title: success ? 'Success!' : 'Failed!',
-    text: success && 'Your workout has been uploaded to Garmin Connect!',
+    icon: message.success ? 'success' : 'error',
+    title: message.success ? 'Success!' : 'Failed!',
+    text: message.success
+      ? 'Your workout has been uploaded to Garmin Connect!'
+      : message.message,
   })
-  return success
+  return message.success
 }
