@@ -4,7 +4,7 @@ import { convertWorkout, initCollapsible, uploadWorkout } from './renderer'
 export class Workouts extends HTMLElement {
   workouts: WorkoutT[]
   containerTemplateEl: HTMLTemplateElement
-  constructor(workouts) {
+  constructor(workouts: WorkoutT[]) {
     super()
 
     this.workouts = workouts

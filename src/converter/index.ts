@@ -10,29 +10,25 @@ const java: NodeAPI = require('java')
 java.classpath.push(
   path.join(getAbsolutePath(LIB_DIR), 'fitnotes2fit-1.0.3.jar')
 )
+java.classpath.push(path.join(getAbsolutePath(LIB_DIR), 'opencsv-4.0.jar'))
 java.classpath.push(
-  '/home/kblagoev/.m2/repository/com/opencsv/opencsv/4.0/opencsv-4.0.jar'
+  path.join(getAbsolutePath(LIB_DIR), 'garmin-fit-21.78.00.jar')
 )
 java.classpath.push(
-  '/home/kblagoev/.m2/repository/com/garmin/garmin-fit/21.78.00/garmin-fit-21.78.00.jar'
+  path.join(getAbsolutePath(LIB_DIR), 'commons-lang3-3.6.jar')
+)
+java.classpath.push(path.join(getAbsolutePath(LIB_DIR), 'commons-text-1.1.jar'))
+java.classpath.push(
+  path.join(getAbsolutePath(LIB_DIR), 'commons-beanutils-1.9.3.jar')
 )
 java.classpath.push(
-  '/home/kblagoev/.m2/repository/org/apache/commons/commons-lang3/3.6/commons-lang3-3.6.jar'
+  path.join(getAbsolutePath(LIB_DIR), 'commons-lang3-3.5.jar')
 )
 java.classpath.push(
-  '/home/kblagoev/.m2/repository/org/apache/commons/commons-text/1.1/commons-text-1.1.jar'
+  path.join(getAbsolutePath(LIB_DIR), 'commons-logging-1.2.jar')
 )
 java.classpath.push(
-  '/home/kblagoev/.m2/repository/commons-beanutils/commons-beanutils/1.9.3/commons-beanutils-1.9.3.jar'
-)
-java.classpath.push(
-  '/home/kblagoev/.m2/repository/org/apache/commons/commons-lang3/3.5/commons-lang3-3.5.jar'
-)
-java.classpath.push(
-  '/home/kblagoev/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar'
-)
-java.classpath.push(
-  '/home/kblagoev/.m2/repository/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar'
+  path.join(getAbsolutePath(LIB_DIR), 'commons-collections-3.2.2.jar')
 )
 
 export class Converter {

@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    electronAPI: any
+  }
+}
+
 export interface ConverterConfigI {
   csvFilePath: string
   csvDir?: string

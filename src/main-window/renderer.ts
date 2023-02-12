@@ -55,9 +55,7 @@ export function initCollapsible() {
   var instances = M.Collapsible.init(elems, { accordion: false })
 }
 
-export async function convertWorkout(
-  workout: WorkoutT
-): Promise<string | null> {
+export async function convertWorkout(workout: WorkoutT): Promise<string> {
   const success: string = await window.electronAPI.convertWorkout(workout)
   Swal.fire({
     title: success ? 'Success!' : 'Failed!',

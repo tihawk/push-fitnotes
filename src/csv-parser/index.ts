@@ -1,5 +1,4 @@
 import { parse } from 'csv-parse'
-// const stringify = require('csv-stringify/lib/sync')
 import { stringify } from 'csv-stringify/sync'
 import path from 'path'
 import fs from 'fs'

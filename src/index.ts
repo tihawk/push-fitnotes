@@ -209,12 +209,7 @@ function convertCSV() {
     return
   }
 
-  const converter = new Converter(
-    {
-      csvFilePath: csvFilePath,
-    },
-    console.log
-  )
+  const converter = new Converter({ csvFilePath: csvFilePath }, console.log)
 
   const activities = converter.convertToFitActivities()
   const filenames = converter.writeActivitiesToFitFilesSync(activities)

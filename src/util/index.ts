@@ -19,7 +19,7 @@ export function timeStringToFloatMinutes(time: string): number {
   return hours * 60 + minutes + seconds / 60
 }
 
-export function floatMinutesTommss(minutes) {
+export function floatMinutesTommss(minutes: number): string {
   const sign = minutes < 0 ? '-' : ''
   const min = Math.floor(Math.abs(minutes))
   const sec = Math.floor((Math.abs(minutes) * 60) % 60)
@@ -27,7 +27,7 @@ export function floatMinutesTommss(minutes) {
 }
 
 export class LocalStorage {
-  csvPath
+  csvPath: string
   constructor() {}
 }
 
