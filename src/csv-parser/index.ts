@@ -36,6 +36,7 @@ export class CSVParser {
             selected: false,
             converted: false,
             uploaded: false,
+            fitFilename: null,
           },
           date: new Date(row.Date),
           exercises: [

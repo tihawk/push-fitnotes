@@ -1,5 +1,5 @@
 import { WorkoutT } from '../util/interfaces'
-import { initCollapsible } from './renderer'
+import { convertWorkout, initCollapsible, uploadWorkout } from './renderer'
 
 export class Workouts extends HTMLElement {
   workouts: WorkoutT[]
@@ -55,12 +55,25 @@ class WorkoutElement extends HTMLElement {
     workoutEl.querySelector('span.date').innerHTML = new Date(
       this.workout.date
     ).toLocaleDateString('de')
+
     const selectWorkoutCheckbox: HTMLInputElement = workoutEl.querySelector(
       'input.select-workout'
     )
     selectWorkoutCheckbox.checked = this.workout.meta.selected
     selectWorkoutCheckbox.onchange = (e) =>
       this.updateCheckbox(e, this.workout.meta, 'selected', this)
+
+    const convertWorkoutBtn: HTMLButtonElement = workoutEl.querySelector(
+      'button[name=convert]'
+    )
+    convertWorkoutBtn.onclick = (e) => this.handleConvertWorkout(e)
+
+    const uploadWorkoutBtn: HTMLButtonElement = workoutEl.querySelector(
+      'button[name=upload]'
+    )
+    uploadWorkoutBtn.disabled =
+      !this.workout.meta.converted || this.workout.meta.uploaded
+    uploadWorkoutBtn.onclick = (e) => this.handleUploadWorkout(e)
 
     // Append exercises for each workout
     const exercisesContainerEl = workoutEl.querySelector('div.exercises')
@@ -71,6 +84,25 @@ class WorkoutElement extends HTMLElement {
   }
 
   updateCheckbox = updateCheckbox
+
+  async handleConvertWorkout(e: Event) {
+    e.stopPropagation()
+
+    const filename = await convertWorkout(this.workout)
+    this.workout.meta.converted = !!filename
+    this.workout.meta.fitFilename = filename
+    this.render()
+    initCollapsible()
+  }
+
+  async handleUploadWorkout(e: Event) {
+    e.stopPropagation()
+
+    const success = await uploadWorkout(this.workout)
+    this.workout.meta.uploaded = success
+    this.render()
+    initCollapsible()
+  }
 }
 
 class ExerciseElement extends HTMLElement {

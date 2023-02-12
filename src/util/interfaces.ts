@@ -20,6 +20,7 @@ export type WorkoutT = {
     selected: boolean
     converted: boolean
     uploaded: boolean
+    fitFilename: string
   }
   date: Date
   exercises: {

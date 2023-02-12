@@ -5,6 +5,7 @@ import {
   MenuItem,
   MenuItemConstructorOptions,
   dialog,
+  ipcMain,
 } from 'electron'
 import { Converter } from './converter'
 import { GarminConnector } from './garmin-connector'
@@ -14,6 +15,7 @@ import { CSVParser } from './csv-parser'
 import { cwd } from 'process'
 import { CSV_DIR } from './util/constants'
 import { SweetAlertOptions } from 'sweetalert2'
+import { WorkoutT } from './util/interfaces'
 const { session } = require('electron')
 
 // a class to keep track of in-memory vars
@@ -61,16 +63,9 @@ app.on('ready', () => {
   const menu = Menu.buildFromTemplate(getMenuTemplate())
   Menu.setApplicationMenu(menu)
 
-  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: {
-        ...details.responseHeaders,
-        'Content-Security-Policy': [
-          "script-src-elem 'self' https://cdnjs.cloudflare.com 'unsafe-inline'",
-        ],
-      },
-    })
-  })
+  // Listen to events
+  ipcMain.handle('convert-workout', handleConvertWorkout)
+  ipcMain.handle('upload-workout', handleUploadWorkout)
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -231,6 +226,16 @@ function convertCSV() {
       .sort(sortAlphabetically)
       .join(',<br/>')}</p>`,
   } as SweetAlertOptions)
+}
+
+function handleConvertWorkout(event, message: WorkoutT) {
+  console.log(message)
+  return 'bs'
+}
+
+function handleUploadWorkout(event, message: WorkoutT) {
+  console.log(message)
+  return message.meta.converted && message.meta.fitFilename
 }
 
 // function debug() {
