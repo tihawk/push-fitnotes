@@ -6,3 +6,15 @@ export function getAbsolutePath(relativePath: string): string {
 }
 
 export const isMac = process.platform === 'darwin'
+
+export function timeStringToFloatMinutes(time: string): number {
+  const hoursMinutesSeconds = time.split(/[.:]/)
+  const hours = parseInt(hoursMinutesSeconds[0], 10)
+  const minutes = hoursMinutesSeconds[1]
+    ? parseInt(hoursMinutesSeconds[1], 10)
+    : 0
+  const seconds = hoursMinutesSeconds[2]
+    ? parseInt(hoursMinutesSeconds[2], 10)
+    : 0
+  return hours * 60 + minutes + seconds / 60
+}

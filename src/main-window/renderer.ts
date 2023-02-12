@@ -31,8 +31,10 @@ import { Workouts } from './workouts'
 import { WorkoutT } from '../util/interfaces'
 customElements.define('workouts-wrapper', Workouts)
 import 'materialize-css'
+// import { ipcRenderer } from 'electron'
+// const { ipcRenderer } = window.require('electron');
 
-var workouts: WorkoutT[] = [
+let workouts: WorkoutT[] = [
   {
     date: new Date(),
     exercises: [
@@ -83,8 +85,11 @@ var workouts: WorkoutT[] = [
   },
 ]
 
-const workoutsEl = new Workouts(workouts)
-document.body.appendChild(workoutsEl)
+window.electronAPI.onLoadedCSVData((e, message) => {
+  workouts = message.data
+  const workoutsEl = new Workouts(workouts)
+  document.body.appendChild(workoutsEl)
+})
 
 console.log(
   '👋 This message is being logged by "renderer.js", included via webpack'
