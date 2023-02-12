@@ -16,7 +16,6 @@ import { cwd } from 'process'
 import { CSV_DIR } from './util/constants'
 import { SweetAlertOptions } from 'sweetalert2'
 import { WorkoutT } from './util/interfaces'
-const { session } = require('electron')
 
 // a class to keep track of in-memory vars
 const localStorage = new LocalStorage()
@@ -195,7 +194,7 @@ function loadCSV() {
     return
   }
 
-  const csvParser = new CSVParser({ csvFilename: csvFilePath }, console.log)
+  const csvParser = new CSVParser({ csvFilePath: csvFilePath }, console.log)
   csvParser.parseData().then((res) => {
     mainWindow.webContents.send('loaded-csv-data', {
       data: res,
@@ -212,7 +211,7 @@ function convertCSV() {
 
   const converter = new Converter(
     {
-      csvFilename: csvFilePath,
+      csvFilePath: csvFilePath,
     },
     console.log
   )

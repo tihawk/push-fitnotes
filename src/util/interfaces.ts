@@ -1,5 +1,5 @@
 export interface ConverterConfigI {
-  csvFilename: string
+  csvFilePath: string
   csvDir?: string
   outFitDir?: string
 }
@@ -11,7 +11,7 @@ export interface GarminConnectorConfigI {
 }
 
 export interface CSVParserConfigI {
-  csvFilename: string
+  csvFilePath: string
   csvDir?: string
 }
 

@@ -8,7 +8,7 @@ import { CSV_DIR } from '../util/constants'
 
 export class CSVParser {
   config: CSVParserConfigI = {
-    csvFilename: '',
+    csvFilePath: '',
     csvDir: CSV_DIR,
   }
   logger
@@ -20,7 +20,7 @@ export class CSVParser {
   async parseData(): Promise<WorkoutT[]> {
     const result: WorkoutT[] = []
     const parser = fs
-      .createReadStream(path.resolve(this.config.csvFilename))
+      .createReadStream(path.resolve(this.config.csvFilePath))
       .pipe(parse({ columns: true }))
       .on('data', (row: any) => {
         if (!this.isValidRow(row)) {
@@ -99,4 +99,6 @@ export class CSVParser {
   isValidRow(row: FitNotesCSVRowT): row is FitNotesCSVRowT {
     return !!row.Date.match(/\d\d\d\d-\d\d-\d\d/).length && !!row.Exercise
   }
+
+  async flattenData()
 }

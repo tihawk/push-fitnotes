@@ -37,7 +37,7 @@ java.classpath.push(
 
 export class Converter {
   config: ConverterConfigI = {
-    csvFilename: '',
+    csvFilePath: '',
     csvDir: CSV_DIR,
     outFitDir: OUTFIT_DIR,
   }
@@ -50,14 +50,30 @@ export class Converter {
   }
 
   convertToFitActivities(): any {
+    const fileString = fs.readFileSync(
+      path.resolve(cwd(), this.config.csvDir, this.config.csvFilePath),
+      'utf8'
+    )
+    const javaByteArray = java.newArray(
+      'byte',
+      fileString.split('').map((c, i) => java.newByte(fileString.charCodeAt(i)))
+    )
     const activities = java.callStaticMethodSync(
       'com.developination.fitnotes2fit.FitNotesParser.FitNotesParser',
       'parseFileNotesIntoActivities',
-      path.resolve(cwd(), this.config.csvDir, this.config.csvFilename)
+      javaByteArray
     )
-    const numOfActivities = activities.sizeSync()
-    this.logger('numOfActivities:', numOfActivities)
     return activities
+
+    // This code passes the filepath to java, which then loads the file itself:
+    // const activities = java.callStaticMethodSync(
+    //   'com.developination.fitnotes2fit.FitNotesParser.FitNotesParser',
+    //   'parseFileNotesIntoActivities',
+    //   path.resolve(cwd(), this.config.csvDir, this.config.csvFilename)
+    // )
+    // const numOfActivities = activities.sizeSync()
+    // this.logger('numOfActivities:', numOfActivities)
+    // return activities
   }
 
   writeActivitiesToFitFilesSync(activities): string[] {
