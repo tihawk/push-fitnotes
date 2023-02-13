@@ -235,7 +235,7 @@ function handleQuickConvert() {
 function selectCSV(callback) {
   dialog
     .showOpenDialog({
-      defaultPath: path.resolve(__dirname, CSV_DIR),
+      defaultPath: path.resolve(app.getAppPath(), CSV_DIR),
       properties: ['openFile'],
       filters: [{ name: 'CSV', extensions: ['csv'] }],
     })

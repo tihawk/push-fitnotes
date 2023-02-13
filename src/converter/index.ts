@@ -4,6 +4,7 @@ import fs from 'fs'
 import { getAbsolutePath } from '../util'
 import { CSV_DIR, LIB_DIR, OUTFIT_DIR } from '../util/constants'
 import { ConverterConfigI } from '../util/interfaces'
+import { app } from 'electron'
 const java: NodeAPI = require('java')
 
 java.classpath.push(
@@ -46,7 +47,11 @@ export class Converter {
 
   convertToFitActivities(): any {
     const fileString = fs.readFileSync(
-      path.resolve(__dirname, this.config.csvDir, this.config.csvFilePath),
+      path.resolve(
+        app.getAppPath(),
+        this.config.csvDir,
+        this.config.csvFilePath
+      ),
       'utf8'
     )
     const javaByteArray = java.newArray(
@@ -64,7 +69,7 @@ export class Converter {
     // const activities = java.callStaticMethodSync(
     //   'com.developination.fitnotes2fit.FitNotesParser.FitNotesParser',
     //   'parseFileNotesIntoActivities',
-    //   path.resolve(__dirname, this.config.csvDir, this.config.csvFilename)
+    //   path.resolve(app.getAppPath(), this.config.csvDir, this.config.csvFilename)
     // )
     // const numOfActivities = activities.sizeSync()
     // this.logger('numOfActivities:', numOfActivities)
@@ -100,7 +105,7 @@ export class Converter {
       java.callMethodSync(
         activityEncoder,
         'encodeActivity',
-        this.config.outFitDir
+        path.join(app.getAppPath(), this.config.outFitDir)
       )
 
       const filename = java.callMethodSync(activity, 'getActivityName') + '.fit'

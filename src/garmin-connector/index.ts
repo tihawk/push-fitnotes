@@ -3,6 +3,7 @@ import { OUTFIT_DIR } from '../util/constants'
 import { GarminConnectorConfigI } from '../util/interfaces'
 import { GarminConnect } from 'garmin-connect'
 import { GCCredentials } from 'garmin-connect/dist/garmin/GarminConnect'
+import { app } from 'electron'
 
 export class GarminConnector {
   config: GarminConnectorConfigI = {
@@ -34,7 +35,7 @@ export class GarminConnector {
   async uploadActivity(filename) {
     // In development the program is ran from a different folder from where java stores .fit files
     const filepath = path.resolve(
-      process.env.NODE_ENV === 'development' ? process.cwd() : __dirname,
+      process.env.NODE_ENV === 'development' ? process.cwd() : app.getAppPath(),
       this.config.outFitDir,
       filename
     )
