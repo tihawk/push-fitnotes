@@ -17,7 +17,6 @@ import {
 } from './util'
 import path from 'path'
 import { CSVParser } from './csv-parser'
-import { cwd } from 'process'
 import { CSV_DIR } from './util/constants'
 import { SweetAlertOptions } from 'sweetalert2'
 import { MessageT, WorkoutT } from './util/interfaces'
@@ -175,7 +174,7 @@ function handleQuickConvert() {
 function selectCSV(callback) {
   dialog
     .showOpenDialog({
-      defaultPath: path.resolve(cwd(), CSV_DIR),
+      defaultPath: path.resolve(__dirname, CSV_DIR),
       properties: ['openFile'],
       filters: [{ name: 'CSV', extensions: ['csv'] }],
     })

@@ -1,5 +1,4 @@
 import path from 'path'
-import { cwd } from 'process'
 import { OUTFIT_DIR } from '../util/constants'
 import { GarminConnectorConfigI } from '../util/interfaces'
 import { GarminConnect } from 'garmin-connect'
@@ -33,7 +32,7 @@ export class GarminConnector {
   }
 
   async uploadActivity(filename) {
-    const filepath = path.resolve(cwd(), this.config.outFitDir, filename)
+    const filepath = path.resolve(__dirname, this.config.outFitDir, filename)
     console.log('attempting to upload', filepath)
     // @ts-ignore
     const upload = await this.GCClient.uploadActivity(filepath, '.fit')
