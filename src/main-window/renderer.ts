@@ -33,13 +33,43 @@ import Swal from 'sweetalert2'
 import M from 'materialize-css'
 import 'material-icons'
 
+const Progress = Swal.mixin({
+  allowEscapeKey: () => !Swal.isLoading(),
+  allowOutsideClick: () => !Swal.isLoading(),
+  allowEnterKey: () => !Swal.isLoading(),
+  title: 'Working on it!',
+  icon: 'info',
+  didOpen: () => Swal.showLoading(),
+})
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-right',
+  showConfirmButton: false,
+  timer: 3000,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  },
+})
+
 document.addEventListener('DOMContentLoaded', function () {
   initCollapsible()
 })
 
 let workouts: WorkoutT[]
 
+window.electronAPI.onGeneralIsLoading((e, message) => {
+  Progress.fire({
+    text: message.message,
+  })
+})
+
 window.electronAPI.onLoadedCSVData((e, message) => {
+  Toast.fire({
+    text: message.message,
+    icon: message.success ? 'success' : 'error',
+  })
   workouts = message.data
   const workoutsEl = new Workouts(workouts)
   document.body.appendChild(workoutsEl)
@@ -56,8 +86,9 @@ export function initCollapsible() {
 }
 
 export async function convertWorkout(workout: WorkoutT): Promise<string> {
+  Progress.fire()
   const message: MessageT = await window.electronAPI.convertWorkout(workout)
-  Swal.fire({
+  Toast.fire({
     icon: message.success ? 'success' : 'error',
     title: message.success ? 'Success!' : 'Failed!',
     text: message.success
@@ -68,6 +99,7 @@ export async function convertWorkout(workout: WorkoutT): Promise<string> {
 }
 
 export async function uploadWorkout(workout: WorkoutT): Promise<boolean> {
+  Progress.fire()
   const message: MessageT = await window.electronAPI.uploadWorkout(workout)
   Swal.fire({
     icon: message.success ? 'success' : 'error',

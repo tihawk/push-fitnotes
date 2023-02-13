@@ -7,6 +7,7 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electronAPI', {
   // receive from main
+  onGeneralIsLoading: (callback) => ipcRenderer.on('is-loading', callback),
   onLoadedCSVData: (callback) => ipcRenderer.on('loaded-csv-data', callback),
   onDisplayMessage: (callback) => ipcRenderer.on('display-message', callback),
   // two-way communication

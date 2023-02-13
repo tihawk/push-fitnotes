@@ -200,11 +200,18 @@ function loadCSV() {
     return
   }
 
+  mainWindow.webContents.send('is-loading', {
+    success: true,
+    message: 'Loading data from CSV',
+  } as MessageT)
+
   const csvParser = new CSVParser({ csvFilePath: csvFilePath }, console.log)
   csvParser.parseData().then((res) => {
     mainWindow.webContents.send('loaded-csv-data', {
+      success: true,
+      message: 'Success!',
       data: res.sort(sortCounterAlphabetically),
-    })
+    } as MessageT)
   })
 }
 
@@ -214,6 +221,11 @@ function convertCSV() {
     console.error('No valid CSV target!')
     return
   }
+
+  mainWindow.webContents.send('is-loading', {
+    success: true,
+    message: 'Converting CSV file to FIT activities',
+  } as MessageT)
 
   const converter = new Converter({ csvFilePath: csvFilePath }, console.log)
 
