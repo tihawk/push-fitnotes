@@ -1,6 +1,6 @@
 {
   "name": "push-fitnotes",
-  "productName": "PushFitnotes",
+  "productName": "push-fitnotes",
   "version": "0.0.1",
   "description": "An app to convert FitNotes exported workouts into .fit binaries, and upload them to Garmin Connect.",
   "main": ".webpack/main",
@@ -11,7 +11,15 @@
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
-  "keywords": [],
+  "keywords": [
+    "electron",
+    "fitnotes",
+    "fit",
+    "garmin",
+    "workout",
+    "upload",
+    "fitness"
+  ],
   "author": {
     "name": "Kiril Panayotov Blagoev",
     "email": "blagoeffkp@gmail.com"
@@ -54,9 +62,10 @@
     "typescript": "~4.5.4"
   },
   "dependencies": {
+    "@types/electron-json-storage": "^4.5.0",
     "@types/java": "^0.9.2",
     "csv": "^6.2.7",
-    "electron-rebuild": "^3.2.9",
+    "electron-json-storage": "^4.6.0",
     "electron-squirrel-startup": "^1.0.0",
     "garmin-connect": "^1.4.5",
     "husky": "^4.3.8",

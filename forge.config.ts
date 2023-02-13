@@ -36,6 +36,14 @@ const config: ForgeConfig = {
             js: './src/about/renderer.ts',
             name: 'about',
           },
+          {
+            html: './src/settings-window/index.html',
+            js: './src/settings-window/renderer.ts',
+            name: 'settings_window',
+            preload: {
+              js: './src/settings-window/preload.ts',
+            },
+          },
         ],
       },
     }),

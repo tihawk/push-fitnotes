@@ -28,32 +28,15 @@
 
 import '../index.min.css'
 import { Workouts } from './workouts'
-import { MessageT, WorkoutT } from '../util/interfaces'
+import { MessageT, SettingsI, WorkoutT } from '../util/interfaces'
 import Swal from 'sweetalert2'
 import M from 'materialize-css'
 import 'material-icons'
-
-const Progress = Swal.mixin({
-  allowEscapeKey: () => !Swal.isLoading(),
-  allowOutsideClick: () => !Swal.isLoading(),
-  allowEnterKey: () => !Swal.isLoading(),
-  title: 'Working on it!',
-  icon: 'info',
-  didOpen: () => Swal.showLoading(),
-})
-
-const Toast = Swal.mixin({
-  toast: true,
-  position: 'top-right',
-  showConfirmButton: false,
-  timer: 3000,
-  didOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer)
-    toast.addEventListener('mouseleave', Swal.resumeTimer)
-  },
-})
+import { NotificationElement } from './notification'
+import { initCollapsible, Progress, Toast } from '../util/renderer'
 
 document.addEventListener('DOMContentLoaded', function () {
+  validateSettings()
   initCollapsible()
 })
 
@@ -80,11 +63,6 @@ window.electronAPI.onDisplayMessage((e, message) => {
   Swal.fire(message)
 })
 
-export function initCollapsible() {
-  var elems = document.querySelectorAll('.collapsible')
-  var instances = M.Collapsible.init(elems, { accordion: false })
-}
-
 export async function convertWorkout(workout: WorkoutT): Promise<string> {
   Progress.fire()
   const message: MessageT = await window.electronAPI.convertWorkout(workout)
@@ -104,9 +82,20 @@ export async function uploadWorkout(workout: WorkoutT): Promise<boolean> {
   Swal.fire({
     icon: message.success ? 'success' : 'error',
     title: message.success ? 'Success!' : 'Failed!',
-    text: message.success
-      ? 'Your workout has been uploaded to Garmin Connect!'
-      : message.message,
+    html: message.message,
   })
   return message.success
+}
+
+async function validateSettings() {
+  const { username, password } = await (<
+    Promise<SettingsI['garminCredentials']>
+  >window.electronAPI.getSetting('garminCredentials'))
+  if (!username || !password) {
+    const noGarminCredentialsNotification = new NotificationElement({
+      level: 'warning',
+      message:
+        "You haven't set up your Garmin Credentials yet. You won't be able to upload any workouts to Garmin Connect, until you do. Go to File > Settings to set up your Garmin Connect credentials. Note, that these will be only stored locally, and won't be used for anything else beyond what this app provides as functionality.",
+    })
+  }
 }

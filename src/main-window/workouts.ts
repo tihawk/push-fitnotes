@@ -1,5 +1,7 @@
+import { initCollapsible, updateCheckbox } from '../util/renderer'
+import { updateValue } from '../util/renderer'
 import { WorkoutT } from '../util/interfaces'
-import { convertWorkout, initCollapsible, uploadWorkout } from './renderer'
+import { convertWorkout, uploadWorkout } from './renderer'
 
 export class Workouts extends HTMLElement {
   workouts: WorkoutT[]
@@ -182,22 +184,6 @@ class SetElement extends HTMLElement {
   }
 
   updateValue = updateValue
-}
-
-function updateValue(e: Event, object, key, ref) {
-  // @ts-ignore
-  object[key] = e.target.value
-  ref.render()
-
-  initCollapsible()
-}
-
-function updateCheckbox(e: Event, object, key, ref) {
-  // @ts-ignore
-  object[key] = e.target.checked
-  ref.render()
-
-  initCollapsible()
 }
 
 customElements.define('workouts-wrapper', Workouts)

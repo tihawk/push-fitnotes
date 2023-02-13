@@ -8,18 +8,6 @@ rules.push({
   use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
 })
 
-plugins.push(
-  // @ts-ignore
-  new CopyWebpackPlugin({
-    patterns: [
-      {
-        from: 'src/*.css',
-        to: '[name][ext]',
-      },
-    ],
-  })
-)
-
 export const rendererConfig: Configuration = {
   module: {
     rules,

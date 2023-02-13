@@ -83,3 +83,20 @@ export type MessageT = {
   message: string
   data?: any
 }
+
+export type NotificationT = {
+  level: 'info' | 'warning' | 'error'
+  message: string
+}
+
+export interface SettingsI {
+  garminCredentials: {
+    username: string
+    password: string
+  }
+}
+
+export interface setSettingsI {
+  key: string
+  data: object
+}

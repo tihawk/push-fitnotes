@@ -24,18 +24,24 @@ export class GarminConnector {
           password: this.config.password,
         })
       : undefined
-    this.GCClient = new GarminConnect()
+    this.GCClient = new GarminConnect(credentials)
   }
 
   async logIntoGarminConnect(): Promise<GarminConnect> {
-    return await this.GCClient.login()
+    return await this.GCClient.login(this.config.username, this.config.password)
   }
 
   async uploadActivity(filename) {
-    const filepath = path.resolve(__dirname, this.config.outFitDir, filename)
-    console.log('attempting to upload', filepath)
+    // In development the program is ran from a different folder from where java stores .fit files
+    const filepath = path.resolve(
+      process.env.NODE_ENV === 'development' ? process.cwd() : __dirname,
+      this.config.outFitDir,
+      filename
+    )
+    this.logger('attempting to upload', filepath)
     // @ts-ignore
-    const upload = await this.GCClient.uploadActivity(filepath, '.fit')
+    const upload = await this.GCClient.uploadActivity(filepath)
+    this.logger(upload)
     return upload
   }
 }

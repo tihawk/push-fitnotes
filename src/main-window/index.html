@@ -4,7 +4,17 @@
 <head>
   <meta charset="UTF-8" />
   <title>Push Fitnotes</title>
-
+  <style>
+    blockquote.info {
+      border-left: 5px solid #4a148c;
+    }
+    blockquote.warning {
+      border-left: 5px solid #f57f17;
+    }
+    blockquote.error {
+      border-left: 5px solid #b71c1c;
+    }
+  </style>
 </head>
 
 <body class="grey darken-4">
@@ -12,6 +22,7 @@
     <h1>Workouts</h1>
     <h6>Convert your workouts to Garmin's <code>.fit</code> format, and upload them individually, or in bulk.</h6>
   </div>
+  <div class="container white-text" id="notifications-wrapper"></div>
 </body>
 <template id="container-template">
   <div class="container"></div>
@@ -79,6 +90,10 @@
       </div>
     </div>
   </div>
+</template>
+
+<template id="notification-template">
+  <blockquote></blockquote>
 </template>
 
 </html>

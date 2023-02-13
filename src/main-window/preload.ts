@@ -15,4 +15,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke('convert-workout', workout),
   uploadWorkout: (workout: WorkoutT) =>
     ipcRenderer.invoke('upload-workout', workout),
+  getSetting: (key: string) => ipcRenderer.invoke('get-setting', key),
 })
