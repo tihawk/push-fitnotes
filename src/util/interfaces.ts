@@ -105,7 +105,7 @@ export type MessageT = {
 }
 
 export type NotificationT = {
-  level: 'info' & 'warning' & 'error'
+  level: 'info' | 'warning' | 'error'
   message: string
 }
 
