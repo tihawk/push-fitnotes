@@ -223,11 +223,15 @@ function createSettingsWindow() {
 // code. You can also put them in separate files and import them here.
 
 function handleLoadCSV() {
-  selectCSV(loadCSV)
+  selectCSV((filepath: string) =>
+    loadCSV(filepath, (workouts: WorkoutT[]) => sendWorkoutsAsMessage(workouts))
+  )
 }
 
 function handleQuickConvert() {
-  selectCSV(convertCSV)
+  selectCSV((filepath: string) =>
+    loadCSV(filepath, (workouts: WorkoutT[]) => convertWorkouts(workouts))
+  )
 }
 
 /* MAIN FUNCTIONS THAT DO STUFF */
@@ -244,7 +248,7 @@ function selectCSV(callback) {
       if (!res.canceled) {
         if (res.filePaths.length) {
           localStorage.csvPath = res.filePaths[0]
-          callback()
+          callback(res.filePaths[0])
         }
       }
     })
@@ -253,8 +257,8 @@ function selectCSV(callback) {
     })
 }
 
-function loadCSV() {
-  const csvFilePath = localStorage.csvPath
+function loadCSV(csvFilePath: string, callback) {
+  // const csvFilePath = localStorage.csvPath
   if (!csvFilePath) {
     console.error('No valid CSV target!')
     return
@@ -267,15 +271,19 @@ function loadCSV() {
 
   const csvParser = new CSVParser({ csvFilePath: csvFilePath }, console.log)
   csvParser.parseData().then((res) => {
-    mainWindow.webContents.send('loaded-csv-data', {
-      success: true,
-      message: 'Success!',
-      data: res.sort(sortCounterAlphabetically),
-    } as MessageT)
+    callback(res)
   })
 }
 
-function convertCSV() {
+function sendWorkoutsAsMessage(data: WorkoutT[]) {
+  mainWindow.webContents.send('loaded-csv-data', {
+    success: true,
+    message: 'Success!',
+    data: data.sort(sortCounterAlphabetically),
+  } as MessageT)
+}
+
+function convertWorkouts(workouts: WorkoutT[]) {
   const csvFilePath = localStorage.csvPath
   if (!csvFilePath) {
     console.error('No valid CSV target!')
@@ -287,11 +295,9 @@ function convertCSV() {
     message: 'Converting CSV file to FIT activities',
   } as MessageT)
 
-  const converter = new Converter({ csvFilePath: csvFilePath }, console.log)
-
-  const activities = converter.convertToFitActivities()
+  const converter = new Converter({ csvFilePath: '' }, console.log)
+  const activities = Converter.convertToFitActivities(workouts)
   const filenames = converter.writeActivitiesToFitFilesSync(activities)
-
   mainWindow.webContents.send('display-message', {
     title: 'Finished converting! The following files were created',
     html: /* html */ `<p>${filenames
@@ -304,9 +310,8 @@ async function handleConvertWorkout(
   event,
   message: WorkoutT
 ): Promise<MessageT> {
-  const csvString = CSVParser.flattenData([message])
   const converter = new Converter({ csvFilePath: '' }, console.log)
-  const activities = Converter.convertToFitActivities(csvString)
+  const activities = Converter.convertToFitActivities([message])
   const filenames = converter.writeActivitiesToFitFilesSync(activities)
 
   return { success: true, message: filenames[0], data: filenames[0] }
@@ -422,19 +427,3 @@ async function handleSetSetting(
   }
   return settingsSet()
 }
-
-// function debug() {
-//   const converter = new Converter(
-//     { csvFilename: 'FitNotes_Export_2023_02_08_19_56_10.csv' },
-//     console.log
-//   )
-//   const activities = converter.convertToFitActivities()
-//   const filenames = converter.writeActivitiesToFitFiles(activities)
-
-//   const uploader = new GarminConnector({}, console.log)
-//   uploader.logIntoGarminConnect().then(() => {
-//     for (const file of filenames) {
-//       uploader.uploadActivity(file)
-//     }
-//   })
-// }

@@ -15,7 +15,7 @@ export class GarminConnector {
   constructor(config: GarminConnectorConfigI, logger) {
     this.config = { ...this.config, ...config }
     this.logger = logger
-    logger(this.config)
+
     // Create a new Garmin Connect Client
     // Uses credentials from garmin.config.json or uses supplied params
     let credentials: GCCredentials = undefined

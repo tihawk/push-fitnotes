@@ -78,6 +78,26 @@ export type FitNotesCSVRowT = {
   Comment: string
 }
 
+export type FitExerciseCatSubcatT = {
+  category: number
+  subCategory: number
+}
+
+export type ActivityT = {
+  name: string
+  startTime: Date
+  sets: ({
+    weight: number
+    reps: number
+    duration: number
+    type: number
+  } & FitExerciseCatSubcatT)[]
+}
+
+export type FitNotesToFitDicT = {
+  [fitnotesName: string]: FitExerciseCatSubcatT
+}
+
 export type MessageT = {
   success: boolean
   message: string
@@ -85,7 +105,7 @@ export type MessageT = {
 }
 
 export type NotificationT = {
-  level: 'info' | 'warning' | 'error'
+  level: 'info' & 'warning' & 'error'
   message: string
 }
 
