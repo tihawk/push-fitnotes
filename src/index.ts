@@ -18,12 +18,17 @@ import {
 } from './util'
 import path from 'path'
 import { CSVParser } from './csv-parser'
-import { CSV_DIR, GARMIN_CREDENTIALS_SETTINGS } from './util/constants'
+import {
+  CSV_DIR,
+  OUTFIT_DIR,
+  SETTINGS_EXPORT_DATA,
+  SETTINGS_GARMIN_CREDENTIALS,
+} from './util/constants'
 import { SweetAlertOptions } from 'sweetalert2'
 import {
   MessageT,
   setSettingsI as SetSettingsI,
-  SettingsI,
+  SettingsT,
   WorkoutT,
 } from './util/interfaces'
 import { GarminConnect } from 'garmin-connect'
@@ -94,6 +99,7 @@ app.on('ready', () => {
   ipcMain.handle('get-setting', handleGetSetting)
   ipcMain.handle('get-all-settings', handleGetAllSettings)
   ipcMain.handle('set-setting', handleSetSetting)
+  ipcMain.handle('select-export-dir', handleSelectExportDir)
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -247,7 +253,6 @@ function selectCSV(callback) {
       console.log(res)
       if (!res.canceled) {
         if (res.filePaths.length) {
-          localStorage.csvPath = res.filePaths[0]
           callback(res.filePaths[0])
         }
       }
@@ -258,7 +263,6 @@ function selectCSV(callback) {
 }
 
 function loadCSV(csvFilePath: string, callback) {
-  // const csvFilePath = localStorage.csvPath
   if (!csvFilePath) {
     console.error('No valid CSV target!')
     return
@@ -283,19 +287,20 @@ function sendWorkoutsAsMessage(data: WorkoutT[]) {
   } as MessageT)
 }
 
-function convertWorkouts(workouts: WorkoutT[]) {
-  const csvFilePath = localStorage.csvPath
-  if (!csvFilePath) {
-    console.error('No valid CSV target!')
-    return
+async function convertWorkouts(workouts: WorkoutT[]) {
+  const outFitDir = await getOrCreateOutputDir()
+  if (!outFitDir) {
+    mainWindow.webContents.send('display-message', {
+      title: "Can't save files!",
+      html: 'An output folder has to be selected!',
+    } as SweetAlertOptions)
   }
-
   mainWindow.webContents.send('is-loading', {
     success: true,
     message: 'Converting CSV file to FIT activities',
   } as MessageT)
 
-  const converter = new Converter({ csvFilePath: '' }, console.log)
+  const converter = new Converter({ csvFilePath: '', outFitDir }, console.log)
   const activities = Converter.convertToFitActivities(workouts)
   const filenames = converter.writeActivitiesToFitFilesSync(activities)
   mainWindow.webContents.send('display-message', {
@@ -310,7 +315,11 @@ async function handleConvertWorkout(
   event,
   message: WorkoutT
 ): Promise<MessageT> {
-  const converter = new Converter({ csvFilePath: '' }, console.log)
+  const outFitDir = await getOrCreateOutputDir()
+  if (!outFitDir) {
+    return { success: false, message: 'An output folder has to be selected!' }
+  }
+  const converter = new Converter({ csvFilePath: '', outFitDir }, console.log)
   const activities = Converter.convertToFitActivities([message])
   const filenames = converter.writeActivitiesToFitFilesSync(activities)
 
@@ -324,8 +333,8 @@ async function handleUploadWorkout(
   if (!message.meta?.fitFilename) {
     return { success: false, message: 'No .fit file specified for upload!' }
   }
-  const garminCredentials = <SettingsI['garminCredentials']>(
-    settings.getSync(GARMIN_CREDENTIALS_SETTINGS)
+  const garminCredentials = <SettingsT['garminCredentials']>(
+    settings.getSync(SETTINGS_GARMIN_CREDENTIALS)
   )
   if (
     !garminCredentials ||
@@ -426,4 +435,83 @@ async function handleSetSetting(
     })
   }
   return settingsSet()
+}
+
+async function handleSelectExportDir(event, message): Promise<MessageT> {
+  const exportDataSettings = settings.getSync(
+    SETTINGS_EXPORT_DATA
+  ) as SettingsT['exportData']
+  let outFitDir = exportDataSettings?.outputDir
+  let response: MessageT = {
+    success: true,
+    message: 'Selected export directory',
+  }
+  await dialog
+    .showOpenDialog({
+      defaultPath: path.resolve(app.getAppPath(), OUTFIT_DIR),
+      properties: ['openDirectory', 'createDirectory', 'promptToCreate'],
+      message: 'Select an output directory for converted files',
+    })
+    .then((res) => {
+      console.log(res)
+      if (res.canceled) {
+        response.success = false
+        response.message = 'Failed to store export directory'
+      } else {
+        if (res.filePaths.length) {
+          outFitDir = res.filePaths[0]
+          settings.set(
+            SETTINGS_EXPORT_DATA,
+            { ...exportDataSettings, outputDir: outFitDir },
+            (err) => {
+              response.success = false
+              response.message = 'Failed to store export directory'
+            }
+          )
+          response.data = outFitDir
+        }
+      }
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+  console.log(outFitDir)
+  return response
+}
+
+async function getOrCreateOutputDir() {
+  const exportDataSettings = settings.getSync(
+    SETTINGS_EXPORT_DATA
+  ) as SettingsT['exportData']
+  let outputDir = exportDataSettings?.outputDir
+  console.log(outputDir)
+  if (!outputDir) {
+    await dialog
+      .showOpenDialog({
+        defaultPath: path.resolve(app.getAppPath(), OUTFIT_DIR),
+        properties: ['openDirectory', 'createDirectory', 'promptToCreate'],
+        message: 'Select an output directory for converted files',
+      })
+      .then((res) => {
+        console.log(res)
+        if (res.canceled) {
+        } else {
+          if (res.filePaths.length) {
+            outputDir = res.filePaths[0]
+            settings.set(
+              SETTINGS_EXPORT_DATA,
+              { ...exportDataSettings, outputDir },
+              (err) => {
+                console.error(err)
+              }
+            )
+          }
+        }
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+  }
+  console.log(outputDir)
+  return outputDir
 }

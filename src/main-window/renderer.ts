@@ -28,7 +28,7 @@
 
 import '../index.min.css'
 import { Workouts } from './workouts'
-import { MessageT, SettingsI, WorkoutT } from '../util/interfaces'
+import { MessageT, SettingsT, WorkoutT } from '../util/interfaces'
 import Swal from 'sweetalert2'
 import M from 'materialize-css'
 import 'material-icons'
@@ -89,7 +89,7 @@ export async function uploadWorkout(workout: WorkoutT): Promise<boolean> {
 
 async function validateSettings() {
   const { username, password } = await (<
-    Promise<SettingsI['garminCredentials']>
+    Promise<SettingsT['garminCredentials']>
   >window.electronAPI.getSetting('garminCredentials'))
   if (!username || !password) {
     const noGarminCredentialsNotification = new NotificationElement({

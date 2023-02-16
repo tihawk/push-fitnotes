@@ -1,12 +1,18 @@
 import { FitConstants, FitEncoder, FitMessages, Message } from 'fit-encoder'
-import { ActivityT } from '../util/interfaces'
+import { ActivityT, SettingsT } from '../util/interfaces'
+import settings from 'electron-json-storage'
+import { SETTINGS_EXPORT_DATA } from '../util/constants'
 
 export default class ActivityEncoder extends FitEncoder {
   activitiy: ActivityT
   constructor(activitiy: ActivityT) {
     super()
     this.activitiy = activitiy
-    const avgHeartRate = 105
+    const exportSettings: SettingsT['exportData'] = settings.getSync(
+      SETTINGS_EXPORT_DATA
+    ) as SettingsT['exportData']
+    const avgHeartRate = exportSettings.defaultAvgHeartrate
+    const defaultRestTime = Math.floor(exportSettings.defaultRestTime * 60) // make into seconds
 
     // define messages we'll use
     const fileIdMessage = new Message(
@@ -168,8 +174,7 @@ export default class ActivityEncoder extends FitEncoder {
     // ok. let's start actually doing something useful
     // writing set and record messages
     for (const set of activitiy.sets) {
-      // TODO: implement proper rest times
-      const restTime = 150
+      const restTime = set.restTime || defaultRestTime
       const duration = set.duration || 60
       // active set message
       activeSetMessage.writeDataMessage(
@@ -236,7 +241,7 @@ export default class ActivityEncoder extends FitEncoder {
       FitConstants.event_type.stop,
       FitConstants.sport.fitness_equipment,
       FitConstants.sub_sport.strength_training,
-      avgHeartRate // TODO implement proper avg heart-rate
+      avgHeartRate
     )
 
     // Every FIT ACTIVITY file MUST contain EXACTLY one Activity message

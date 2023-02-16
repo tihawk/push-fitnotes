@@ -18,11 +18,32 @@
         <div class="row">
           <div class="col s6">
             <label for="username">Username</label>
-            <input class="white-text" type="text" id="username">
+            <input class="white-text validate" type="email" id="username">
           </div>
           <div class="col s6">
             <label for="password">Password</label>
-            <input class="white-text" type="password" id="password">
+            <input class="white-text validate" type="password" id="password">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card purple darken-4">
+      <div class="card-content white-text">
+        <span class="card-title">Exported Data</span>
+        <div class="row">
+          <div class="col s12">
+            <label for="output-dir">Export Directory</label><br/>
+            <input type="button" id="output-dir" class="btn deep-purple">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s6">
+            <label for="avg-heartrate">Average Heart-Rate</label>
+            <input class="white-text validate" type="number" min="0" max="250" id="avg-heartrate">
+          </div>
+          <div class="col s6">
+            <label for="rest-time">Default Rest Time</label>
+            <input class="white-text validate" type="number" step="0.1" min="0" max="60" id="rest-time">
           </div>
         </div>
       </div>

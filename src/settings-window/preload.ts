@@ -7,4 +7,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getAllSettings: () => ipcRenderer.invoke('get-all-settings'),
   setSetting: (key: string, data: object) =>
     ipcRenderer.invoke('set-setting', { key, data }),
+  selectExportDir: () => ipcRenderer.invoke('select-export-dir'),
 })

@@ -91,6 +91,7 @@ export type ActivityT = {
     reps: number
     duration: number
     type: number
+    restTime?: number
   } & FitExerciseCatSubcatT)[]
 }
 
@@ -109,12 +110,19 @@ export type NotificationT = {
   message: string
 }
 
-export interface SettingsI {
+export interface SettingsT {
   garminCredentials: {
     username: string
     password: string
   }
+  exportData: {
+    defaultRestTime: number
+    defaultAvgHeartrate: number
+    outputDir: string
+  }
 }
+
+export type SettingsKeyT = keyof SettingsT | keyof SettingsT['exportData']
 
 export interface setSettingsI {
   key: string

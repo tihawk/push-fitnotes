@@ -1,6 +1,6 @@
 import 'material-icons'
 import M from 'materialize-css'
-import { MessageT, SettingsI } from '../util/interfaces'
+import { MessageT, SettingsT } from '../util/interfaces'
 import '../index.min.css'
 import { Toast, updateValue } from '../util/renderer'
 
@@ -17,9 +17,12 @@ async function populateSettings() {
       title: response.message,
     })
   } else {
-    const settings: SettingsI = response.data
+    const settings: SettingsT = response.data
     if (!settings.garminCredentials) {
-      settings.garminCredentials = <SettingsI['garminCredentials']>{}
+      settings.garminCredentials = <SettingsT['garminCredentials']>{}
+    }
+    if (!settings.exportData) {
+      settings.exportData = <SettingsT['exportData']>{}
     }
     const usernameEl = document.getElementById('username') as HTMLInputElement
     usernameEl.value = settings.garminCredentials?.username || ''
@@ -30,12 +33,35 @@ async function populateSettings() {
     passwordEl.onchange = (e) =>
       updateValue(e, settings.garminCredentials, 'password')
 
+    const outputDirBtn = document.getElementById(
+      'output-dir'
+    ) as HTMLInputElement
+    outputDirBtn.value =
+      settings.exportData?.outputDir || 'Select an Export Directory'
+    outputDirBtn.onclick = async (e) => {
+      const response: MessageT = await window.electronAPI.selectExportDir()
+      outputDirBtn.value = response.data
+      settings.exportData.outputDir = response.data
+    }
+    const avgHrEl = document.getElementById('avg-heartrate') as HTMLInputElement
+    avgHrEl.value = settings.exportData?.defaultAvgHeartrate?.toString()
+    avgHrEl.onchange = (e) => {
+      updateValue(e, settings.exportData, 'defaultAvgHeartrate')
+    }
+    const defRestTimeEl = document.getElementById(
+      'rest-time'
+    ) as HTMLInputElement
+    // @ts-ignore
+    defRestTimeEl.value = settings.exportData?.defaultRestTime
+    defRestTimeEl.onchange = (e) =>
+      updateValue(e, settings.exportData, 'defaultRestTime')
+
     const saveButtonEl = document.getElementById('save-settings')
     saveButtonEl.onclick = (e) => saveSettings(settings)
   }
 }
 
-async function saveSettings(data: SettingsI) {
+async function saveSettings(data: SettingsT) {
   for (const settingKey of Object.keys(data)) {
     const response: MessageT = await window.electronAPI.setSetting(
       settingKey,

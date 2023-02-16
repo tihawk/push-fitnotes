@@ -71,7 +71,7 @@ export class Converter {
 
     for (const activity of activities) {
       const encodedActivity = new ActivityEncoder(activity)
-      const filePath = path.join(
+      const filePath = path.resolve(
         app.getAppPath(),
         this.config.outFitDir,
         `${activity.name}.fit`
