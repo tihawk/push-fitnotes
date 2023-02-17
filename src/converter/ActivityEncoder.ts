@@ -13,6 +13,8 @@ export default class ActivityEncoder extends FitEncoder {
     ) as SettingsT['exportData']
     const avgHeartRate = exportSettings.defaultAvgHeartrate
     const defaultRestTime = Math.floor(exportSettings.defaultRestTime * 60) // make into seconds
+    const defaultActiveTime = Math.floor(exportSettings.defaultActiveTime)
+    const shouldGenerateHeartrate = exportSettings.shouldGenerateHeartrate
 
     // define messages we'll use
     const fileIdMessage = new Message(
@@ -90,6 +92,9 @@ export default class ActivityEncoder extends FitEncoder {
       'total_elapsed_time',
       'total_timer_time',
       'total_distance',
+      'total_cycles',
+      'first_lap_index',
+      'num_laps',
       // "total_work",
       // "total_moving_time",
       //"avg_speed",
@@ -129,6 +134,7 @@ export default class ActivityEncoder extends FitEncoder {
     let setStartTime = startTime
     let timestamp = startTime
     let setIndex = 0
+    let totalRepsCycles = 0
 
     // file id message with manufacturer info
     fileIdMessage.writeDataMessage(
@@ -157,14 +163,14 @@ export default class ActivityEncoder extends FitEncoder {
 
     // sport message
     sportMessage.writeDataMessage(
-      FitConstants.sport.fitness_equipment,
+      FitConstants.sport.training,
       FitConstants.sub_sport.strength_training
     )
 
     // workout message
     workoutMessage.writeDataMessage(
       'Strength Workout @ Home',
-      FitConstants.sport.fitness_equipment,
+      FitConstants.sport.training,
       FitConstants.sub_sport.strength_training
     )
 
@@ -174,15 +180,16 @@ export default class ActivityEncoder extends FitEncoder {
     // ok. let's start actually doing something useful
     // writing set and record messages
     for (const set of activitiy.sets) {
-      const restTime = set.restTime || defaultRestTime
-      const duration = set.duration || 60
+      console.log(set)
+      const restTime = set.restTime || defaultRestTime || 0
+      const duration = set.duration || defaultActiveTime || 0
       // active set message
       activeSetMessage.writeDataMessage(
         timestamp,
         duration * 1000,
         setStartTime,
         set.reps,
-        set.weight * 16, // scale is 16 if you can believe it
+        set.weight * 16.0, // scale is 16 if you can believe it
         set.category,
         set.subCategory,
         FitConstants.fit_base_unit.kilogram,
@@ -192,6 +199,7 @@ export default class ActivityEncoder extends FitEncoder {
       // increment accumulators before writing rest set message
       setIndex += 1
       setStartTime += duration
+      totalRepsCycles += set.reps * 1
 
       recordMessage.writeDataMessage(timestamp, avgHeartRate)
 
@@ -237,9 +245,12 @@ export default class ActivityEncoder extends FitEncoder {
       totalElapsedTime * 1000,
       totalElapsedTime * 1000,
       0,
-      FitConstants.event.session,
+      totalRepsCycles,
+      0,
+      activitiy.sets.length,
+      FitConstants.event.lap,
       FitConstants.event_type.stop,
-      FitConstants.sport.fitness_equipment,
+      FitConstants.sport.training,
       FitConstants.sub_sport.strength_training,
       avgHeartRate
     )

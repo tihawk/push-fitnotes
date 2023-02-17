@@ -116,8 +116,10 @@ export interface SettingsT {
     password: string
   }
   exportData: {
+    defaultActiveTime: number
     defaultRestTime: number
     defaultAvgHeartrate: number
+    shouldGenerateHeartrate: boolean
     outputDir: string
   }
 }

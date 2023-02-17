@@ -41,18 +41,21 @@
             <label for="avg-heartrate">Average Heart-Rate</label>
             <input class="white-text validate" type="number" min="0" max="250" id="avg-heartrate">
           </div>
-          <div class="col s6">
-            <label for="heartrate-records">Generate heart-rate records</label>
-            <input class="white-text validate" type="checkbox" min="0" max="250" id="heartrate-records">
+          <div style="display:flex;" class="col s6">
+            <label for="heartrate-records">
+              <input class="input-field white-text validate" type="checkbox" id="heartrate-records">
+              <span>Generate heart-rate records</span>
+            </label>
+            <a style="margin-left:auto;cursor:pointer;" class="tooltipped" data-position="top" data-tooltip="Even more words are needed to check for wrapping.Generate long text lore ipsum and all that which is required for me to explain this in proper detail"><i class="material-icons">help_outline</i></a>
           </div>
         </div>
         <div class="row">
           <div class="col s6">
-            <label for="rest-time">Default Rest Time</label>
-            <input class="white-text validate" type="number" step="0.1" min="0" max="60" id="rest-time">
+            <label for="active-time">Default Set Time (seconds)</label>
+            <input class="white-text validate" type="number" step="1" min="0" max="3600" id="active-time">
           </div>
           <div class="col s6">
-            <label for="rest-time">Default Rest Time</label>
+            <label for="rest-time">Default Rest Time (minutes)</label>
             <input class="white-text validate" type="number" step="0.1" min="0" max="60" id="rest-time">
           </div>
         </div>

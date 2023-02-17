@@ -2,9 +2,11 @@ import 'material-icons'
 import M from 'materialize-css'
 import { MessageT, SettingsT } from '../util/interfaces'
 import '../index.min.css'
-import { Toast, updateValue } from '../util/renderer'
+import { Toast, updateCheckbox, updateValue } from '../util/renderer'
 
 document.addEventListener('DOMContentLoaded', function () {
+  var elems = document.querySelectorAll('.tooltipped')
+  var instances = M.Tooltip.init(elems)
   populateSettings()
 })
 
@@ -43,11 +45,30 @@ async function populateSettings() {
       outputDirBtn.value = response.data
       settings.exportData.outputDir = response.data
     }
+
     const avgHrEl = document.getElementById('avg-heartrate') as HTMLInputElement
     avgHrEl.value = settings.exportData?.defaultAvgHeartrate?.toString()
     avgHrEl.onchange = (e) => {
       updateValue(e, settings.exportData, 'defaultAvgHeartrate')
     }
+
+    const shouldGenerateHeartrateEl = document.getElementById(
+      'heartrate-records'
+    ) as HTMLInputElement
+    shouldGenerateHeartrateEl.checked =
+      settings.exportData?.shouldGenerateHeartrate
+    shouldGenerateHeartrateEl.onchange = (e) => {
+      updateCheckbox(e, settings.exportData, 'shouldGenerateHeartrate')
+    }
+
+    const defActiveTimeEl = document.getElementById(
+      'active-time'
+    ) as HTMLInputElement
+    // @ts-ignore
+    defActiveTimeEl.value = settings.exportData?.defaultActiveTime
+    defActiveTimeEl.onchange = (e) =>
+      updateValue(e, settings.exportData, 'defaultActiveTime')
+
     const defRestTimeEl = document.getElementById(
       'rest-time'
     ) as HTMLInputElement
