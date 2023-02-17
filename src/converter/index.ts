@@ -45,23 +45,20 @@ export class Converter {
           continue
         }
 
-        tempS = {
-          ...fitExerciseCode,
-          reps: null,
-          weight: null,
-          duration: null,
-          type: 1,
-        }
         for (const set of exercise.sets) {
-          tempS.weight = set.weight
-          tempS.reps = set.reps
-          tempS.duration = set.time * 60 // was in minutes, goes to seconds
-
+          tempS = {
+            ...fitExerciseCode,
+            reps: set.reps,
+            weight: set.weight,
+            duration: set.time * 60,
+            type: 1,
+          }
           tempA.sets.push(tempS)
         }
       }
       result.push(tempA)
     }
+    console.log(JSON.stringify(result))
     return result
   }
 
