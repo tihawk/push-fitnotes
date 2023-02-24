@@ -283,7 +283,7 @@ function sendWorkoutsAsMessage(data: WorkoutT[]) {
   mainWindow.webContents.send('loaded-csv-data', {
     success: true,
     message: 'Success!',
-    data: data.sort(sortCounterAlphabetically),
+    data: data.sort((a, b) => sortCounterAlphabetically(a.date, b.date)),
   } as MessageT)
 }
 
