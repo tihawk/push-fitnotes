@@ -3,6 +3,7 @@ import { ActivityT, SettingsT } from '../util/interfaces'
 import settings from 'electron-json-storage'
 import { SETTINGS_EXPORT_DATA } from '../util/constants'
 import NoiseGenerator from '../util/NoiseGenerator'
+import { calculateCaloriesBurned } from '../util'
 
 export default class ActivityEncoder extends FitEncoder {
   activitiy: ActivityT
@@ -114,7 +115,8 @@ export default class ActivityEncoder extends FitEncoder {
       'event_type',
       'sport',
       'sub_sport',
-      'avg_heart_rate'
+      'avg_heart_rate',
+      'total_calories'
       // "max_heart_rate",
       // "avg_cadence",
       // "max_cadence",
@@ -291,7 +293,8 @@ export default class ActivityEncoder extends FitEncoder {
       FitConstants.event_type.stop,
       FitConstants.sport.training,
       FitConstants.sub_sport.strength_training,
-      avgHeartRate
+      avgHeartRate,
+      calculateCaloriesBurned(totalElapsedTime)
     )
 
     // Every FIT ACTIVITY file MUST contain EXACTLY one Activity message

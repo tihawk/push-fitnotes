@@ -39,7 +39,7 @@ export class CSVParser {
             uploaded: false,
             fitFilename: null,
           },
-          date: new Date(row.Date),
+          date: new Date(row.Date + 'T19:00:00'),
           exercises: [
             {
               fitnotesName: row.Exercise,
