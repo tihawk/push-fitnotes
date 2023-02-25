@@ -1,0 +1,8 @@
+{
+  "label": "Installation",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "PushFitnotes can currently be installed on either Windows or Linux. You can also build from source."
+  }
+}

@@ -11,4 +11,4 @@ Sync workouts from Fitnotes to Garmin.
 - Upload them to Garmin Connect.
 - Earn Badges on Garmin
 
-Head to the [Install](/docs/category/install) page to get started!
+Head to the [Install](/docs/category/installation) page to get started!
