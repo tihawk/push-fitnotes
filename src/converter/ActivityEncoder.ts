@@ -2,19 +2,24 @@ import { FitConstants, FitEncoder, FitMessages, Message } from 'fit-encoder'
 import { ActivityT, SettingsT } from '../util/interfaces'
 import settings from 'electron-json-storage'
 import { SETTINGS_EXPORT_DATA } from '../util/constants'
+import NoiseGenerator from '../util/NoiseGenerator'
 
 export default class ActivityEncoder extends FitEncoder {
   activitiy: ActivityT
+  noiseGenerator: NoiseGenerator
   constructor(activitiy: ActivityT) {
     super()
     this.activitiy = activitiy
     const exportSettings: SettingsT['exportData'] = settings.getSync(
       SETTINGS_EXPORT_DATA
     ) as SettingsT['exportData']
-    const avgHeartRate = exportSettings.defaultAvgHeartrate
+    const avgHeartRate = exportSettings.defaultAvgHeartrate * 1
     const defaultRestTime = Math.floor(exportSettings.defaultRestTime * 60) // make into seconds
     const defaultActiveTime = Math.floor(exportSettings.defaultActiveTime)
     const shouldGenerateHeartrate = exportSettings.shouldGenerateHeartrate
+
+    // used for generating heart-rate-like data
+    this.noiseGenerator = new NoiseGenerator()
 
     // define messages we'll use
     const fileIdMessage = new Message(
@@ -185,7 +190,7 @@ export default class ActivityEncoder extends FitEncoder {
       const duration = set.duration || defaultActiveTime || 0
       // active set message
       activeSetMessage.writeDataMessage(
-        timestamp,
+        setStartTime,
         duration * 1000,
         setStartTime,
         set.reps,
@@ -196,27 +201,61 @@ export default class ActivityEncoder extends FitEncoder {
         setIndex,
         FitConstants.set_type.active
       )
+
+      // do heart rate records during active set
+      if (shouldGenerateHeartrate) {
+        for (let i = 0; i < duration; i++) {
+          const recordTimeStamp = setStartTime + i
+          const recordTime = totalElapsedTime + i
+          recordMessage.writeDataMessage(
+            recordTimeStamp,
+            this.noiseGenerator.noise(
+              recordTime,
+              avgHeartRate,
+              avgHeartRate + 30
+            )
+          )
+        }
+      } else {
+        recordMessage.writeDataMessage(setStartTime, avgHeartRate)
+      }
+
       // increment accumulators before writing rest set message
       setIndex += 1
       setStartTime += duration
       totalRepsCycles += set.reps * 1
-
-      recordMessage.writeDataMessage(timestamp, avgHeartRate)
+      totalElapsedTime += duration
 
       restSetMessage.writeDataMessage(
-        timestamp,
+        setStartTime,
         restTime * 1000,
         setStartTime,
         setIndex,
         FitConstants.set_type.rest
       )
 
+      // do heart rate records during rest set
+      if (shouldGenerateHeartrate) {
+        for (let i = 0; i < restTime; i++) {
+          const recordTimeStamp = setStartTime + i
+          const recordTime = totalElapsedTime + i
+          recordMessage.writeDataMessage(
+            recordTimeStamp,
+            this.noiseGenerator.noise(
+              recordTime,
+              avgHeartRate - 15,
+              avgHeartRate + 15
+            )
+          )
+        }
+      } else {
+        recordMessage.writeDataMessage(setStartTime, avgHeartRate)
+      }
+
       // increment again
       setIndex += 1
       setStartTime += restTime
-      totalElapsedTime += duration + restTime
-
-      recordMessage.writeDataMessage(timestamp, avgHeartRate)
+      totalElapsedTime += restTime
     }
 
     console.log('totalElapsedTime:', totalElapsedTime)
