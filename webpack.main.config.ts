@@ -18,9 +18,6 @@ export const mainConfig: Configuration = {
         {
           from: './garmin.config.json',
         },
-        {
-          from: './lib/*',
-        },
       ],
     }),
   ],
