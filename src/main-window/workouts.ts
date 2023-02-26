@@ -2,6 +2,10 @@ import { initCollapsible, updateCheckbox } from '../util/renderer'
 import { updateValue } from '../util/renderer'
 import { WorkoutT } from '../util/interfaces'
 import { convertWorkout, uploadWorkout } from './renderer'
+import {
+  EXERCISE_TO_FIT_CATEGORY_MAP,
+  getNamesFromDictValue,
+} from '../util/FitCategoryMap'
 
 export class Workouts extends HTMLElement {
   workouts: WorkoutT[]
@@ -134,7 +138,9 @@ class ExerciseElement extends HTMLElement {
       this.updateValue(e, this.exercise, 'fitnotesName', this)
     const fitNameEl: HTMLInputElement =
       exerciseEl.querySelector('input.fitName')
-    fitNameEl.value = this.exercise.fitName?.toString()
+    fitNameEl.value = getNamesFromDictValue(
+      EXERCISE_TO_FIT_CATEGORY_MAP[this.exercise.fitnotesName]
+    ).subCategory //this.exercise.fitName?.toString()
     fitNameEl.onchange = (e) =>
       this.updateValue(e, this.exercise, 'fitName', this)
 

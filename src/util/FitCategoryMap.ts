@@ -1,7 +1,37 @@
-import { FitNotesToFitDicT } from './interfaces'
+import { FitExerciseCatSubcatT, FitNotesToFitDicT } from './interfaces'
 import { FitConstants } from 'fit-encoder'
 
 const exerciseCategory = FitConstants['exercise_category']
+
+export function getKeyByValue(object, value) {
+  return Object.keys(object).find((key) => object[key] === value)
+}
+
+export function getNamesFromDictValue(input: FitExerciseCatSubcatT): {
+  category: string
+  subCategory: string
+} {
+  const result = { category: '', subCategory: '' } as {
+    category: string
+    subCategory: string
+  }
+  if (!input) {
+    return result
+  }
+
+  result.category = getKeyByValue(
+    FitConstants.exercise_category,
+    input.category
+  )
+
+  if (!result.category) return result
+  result.subCategory = getKeyByValue(
+    FitConstants[`${result.category}_exercise_name`],
+    input.subCategory
+  )
+
+  return result
+}
 
 export const EXERCISE_TO_FIT_CATEGORY_MAP: FitNotesToFitDicT = {
   'Flat Barbell Bench Press': {
