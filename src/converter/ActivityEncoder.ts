@@ -190,16 +190,21 @@ export default class ActivityEncoder extends FitEncoder {
       console.log(set)
       const restTime = set.restTime || defaultRestTime || 0
       const duration = set.duration || defaultActiveTime || 0
+
+      // if weight is provided in pounds, needs to be converted to kgs
+      // also scaled by 16 if you can believe it
+      const setWeight =
+        (set.unit === 2 ? set.weight * 0.45359237 : set.weight) * 16
       // active set message
       activeSetMessage.writeDataMessage(
         setStartTime,
         duration * 1000,
         setStartTime,
         set.reps,
-        set.weight * 16.0, // scale is 16 if you can believe it
+        setWeight,
         set.category,
         set.subCategory,
-        FitConstants.fit_base_unit.kilogram,
+        set.unit,
         setIndex,
         FitConstants.set_type.active
       )

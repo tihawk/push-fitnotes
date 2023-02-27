@@ -1,7 +1,11 @@
 import { initCollapsible, updateCheckbox } from '../util/renderer'
 import { updateValue } from '../util/renderer'
-import { WorkoutT } from '../util/interfaces'
-import { convertWorkout, uploadWorkout } from './renderer'
+import { SettingsT, WorkoutT } from '../util/interfaces'
+import {
+  convertWorkout,
+  getExportDataSettings,
+  uploadWorkout,
+} from './renderer'
 import {
   EXERCISE_TO_FIT_CATEGORY_MAP,
   getNamesFromDictValue,
@@ -158,6 +162,7 @@ class ExerciseElement extends HTMLElement {
 class SetElement extends HTMLElement {
   setsTemplateEl: HTMLTemplateElement
   set: WorkoutT['exercises']['0']['sets']['0']
+  settings: SettingsT['exportData']
   constructor(set: WorkoutT['exercises']['0']['sets']['0']) {
     super()
 
@@ -166,7 +171,10 @@ class SetElement extends HTMLElement {
       'sets-template'
     ) as HTMLTemplateElement
 
-    this.render()
+    getExportDataSettings().then((res) => {
+      this.settings = res
+      this.render()
+    })
   }
 
   render() {
@@ -175,6 +183,9 @@ class SetElement extends HTMLElement {
     this.appendChild(setsNode)
     const setEl = this.lastElementChild
 
+    const weightLabel: HTMLLabelElement =
+      setEl.querySelector('label.weight-label')
+    weightLabel.innerText = `Weight (${this.set.unit === 1 ? 'kgs' : 'lbs'})`
     const weightEl: HTMLInputElement = setEl.querySelector('input.weight')
     weightEl.value = this.set.weight.toString()
     weightEl.onchange = (e) => this.updateValue(e, this.set, 'weight', this)
@@ -182,9 +193,11 @@ class SetElement extends HTMLElement {
     repsEl.value = this.set.reps.toString()
     repsEl.onchange = (e) => this.updateValue(e, this.set, 'reps', this)
     const timeEl: HTMLInputElement = setEl.querySelector('input.time')
+    timeEl.placeholder = this.settings?.defaultActiveTime?.toString()
     timeEl.value = this.set.time?.toString()
     timeEl.onchange = (e) => this.updateValue(e, this.set, 'time', this)
     const restTimeEl: HTMLInputElement = setEl.querySelector('input.rest-time')
+    restTimeEl.placeholder = this.settings?.defaultRestTime?.toString()
     restTimeEl.value = this.set.restTime?.toString()
     restTimeEl.onchange = (e) => this.updateValue(e, this.set, 'restTime', this)
   }

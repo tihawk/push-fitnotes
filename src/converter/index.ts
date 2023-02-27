@@ -50,6 +50,7 @@ export class Converter {
             ...fitExerciseCode,
             reps: set.reps,
             weight: set.weight,
+            unit: set.unit,
             duration: set.time * 60,
             type: 1,
           }

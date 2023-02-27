@@ -6,6 +6,7 @@ import { WorkoutT, FitNotesCSVRowT, CSVParserConfigI } from '../util/interfaces'
 import { floatMinutesTommss, timeStringToFloatMinutes } from '../util'
 import { finished } from 'stream/promises'
 import { CSV_DIR } from '../util/constants'
+import { FitConstants } from 'fit-encoder'
 
 export class CSVParser {
   config: CSVParserConfigI = {
@@ -32,6 +33,8 @@ export class CSVParser {
             )}. Cancelling CSV parsing.`
           )
         }
+        const weightUnit: 'kgs' | 'lbs' =
+          row['Weight (kgs)'] >= 0 ? 'kgs' : 'lbs'
         const temp: WorkoutT = {
           meta: {
             selected: false,
@@ -47,7 +50,11 @@ export class CSVParser {
               sets: [
                 {
                   reps: row.Reps,
-                  weight: row['Weight (kgs)'],
+                  weight: row[`Weight (${weightUnit})`],
+                  unit:
+                    weightUnit === 'kgs'
+                      ? FitConstants.fit_base_unit.kilogram
+                      : FitConstants.fit_base_unit.pound,
                   time: timeStringToFloatMinutes(row.Time),
                 },
               ],

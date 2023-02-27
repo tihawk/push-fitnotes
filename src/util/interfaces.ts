@@ -36,6 +36,7 @@ export type WorkoutT = {
     sets: {
       reps: number
       weight: number
+      unit: number
       time?: number
       restTime?: number
     }[]
@@ -88,6 +89,7 @@ export type ActivityT = {
   startTime: Date
   sets: ({
     weight: number
+    unit: number
     reps: number
     duration: number
     type: number

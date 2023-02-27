@@ -99,3 +99,11 @@ async function validateSettings() {
     })
   }
 }
+
+export async function getExportDataSettings(): Promise<
+  SettingsT['exportData']
+> {
+  return await (<Promise<SettingsT['exportData']>>(
+    window.electronAPI.getSetting('exportData')
+  ))
+}
