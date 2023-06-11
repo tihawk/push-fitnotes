@@ -33,8 +33,7 @@ export class CSVParser {
             )}. Cancelling CSV parsing.`
           )
         }
-        const weightUnit: 'kgs' | 'lbs' =
-          row['Weight (kgs)'] >= 0 ? 'kgs' : 'lbs'
+        const weightUnit: 'kgs' | 'lbs' = row['Weight Unit']
         const temp: WorkoutT = {
           meta: {
             selected: false,
@@ -50,7 +49,7 @@ export class CSVParser {
               sets: [
                 {
                   reps: row.Reps,
-                  weight: row[`Weight (${weightUnit})`],
+                  weight: row['Weight'],
                   unit:
                     weightUnit === 'kgs'
                       ? FitConstants.fit_base_unit.kilogram
