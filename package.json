@@ -1,7 +1,7 @@
 {
   "name": "push-fitnotes",
   "productName": "push-fitnotes",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "An app to convert FitNotes exported workouts into .fit binaries, and upload them to Garmin Connect.",
   "main": ".webpack/main",
   "scripts": {
