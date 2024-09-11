@@ -38,6 +38,6 @@ export function updateCheckbox(e: Event, object, key, ref?) {
 }
 
 export function initCollapsible() {
-  var elems = document.querySelectorAll('.collapsible')
-  var instances = M.Collapsible.init(elems, { accordion: false })
+  const elems = document.querySelectorAll('.collapsible')
+  const instances = M.Collapsible.init(elems, { accordion: false })
 }

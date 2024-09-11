@@ -70,11 +70,12 @@ export class Converter {
     for (const activity of activities) {
       const encodedActivity = new ActivityEncoder(activity)
       const filePath = path.resolve(
-        app.getAppPath(),
         this.config.outFitDir,
-        `${activity.name}.fit`
+        `${activity.name.replace(/[:]/g, '_')}.fit`
       )
-      fs.writeFileSync(filePath, Buffer.from(encodedActivity.getFile()))
+      fs.writeFileSync(filePath, Buffer.from(encodedActivity.getFile()), {
+        flag: 'w',
+      })
       filepaths.push(filePath)
     }
     return filepaths

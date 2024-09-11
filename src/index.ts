@@ -356,23 +356,24 @@ async function handleUploadWorkout(
       response.message = "Couldn't log into Garmin Connect"
     })
 
-  try {
-    // login unsuccessful if no user hash
-    if (!gc || !gc.userHash) {
-      return { success: false, message: "Couldn't log into Garmin Connect" }
-    }
-  } catch (err) {
-    console.error(err)
-    return { success: false, message: "Couldn't log into Garmin Connect" }
-  }
+  //  try {
+  //    // login unsuccessful if no user hash
+  //    if (!gc || !gc.userHash) {
+  //      return { success: false, message: "Couldn't log into Garmin Connect" }
+  //    }
+  //  } catch (err) {
+  //    console.error(err)
+  //    return { success: false, message: "Couldn't log into Garmin Connect" }
+  //  }
 
   const result = await connector
     .uploadActivity(message.meta.fitFilename)
     .then((res: any) => {
-      if (!res.detailedImportResult.uploadId) {
+      if (res.detailedImportResult.failures.length) {
         response.success = false
-        response.message =
-          "Failed uploading workout. Seems like it's a duplicate of another existing workout"
+        response.message = res.detailedImportResult.failures
+          .map((fail) => fail.messages.map((mes) => mes.content).join('\n'))
+          .join('\n')
       } else {
         // uploadid is not the activityid ;(
         // response.message = response.message.concat(`<br/><a href="https://connect.garmin.com/modern/activity/${res.detailedImportResult.uploadId}">View workout here</a>`)
@@ -442,13 +443,13 @@ async function handleSelectExportDir(event, message): Promise<MessageT> {
     SETTINGS_EXPORT_DATA
   ) as SettingsT['exportData']
   let outFitDir = exportDataSettings?.outputDir
-  let response: MessageT = {
+  const response: MessageT = {
     success: true,
     message: 'Selected export directory',
   }
   await dialog
     .showOpenDialog({
-      defaultPath: path.resolve(app.getAppPath(), OUTFIT_DIR),
+      defaultPath: path.resolve(app.getAppPath()),
       properties: ['openDirectory', 'createDirectory', 'promptToCreate'],
       message: 'Select an output directory for converted files',
     })
@@ -488,7 +489,7 @@ async function getOrCreateOutputDir() {
   if (!outputDir) {
     await dialog
       .showOpenDialog({
-        defaultPath: path.resolve(app.getAppPath(), OUTFIT_DIR),
+        defaultPath: path.resolve(app.getAppPath()),
         properties: ['openDirectory', 'createDirectory', 'promptToCreate'],
         message: 'Select an output directory for converted files',
       })

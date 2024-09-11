@@ -1,5 +1,4 @@
-import { initCollapsible, updateCheckbox } from '../util/renderer'
-import { updateValue } from '../util/renderer'
+import { initCollapsible, updateCheckbox, updateValue } from '../util/renderer'
 import { SettingsT, WorkoutT } from '../util/interfaces'
 import {
   convertWorkout,

@@ -5,8 +5,8 @@ import '../index.min.css'
 import { Toast, updateCheckbox, updateValue } from '../util/renderer'
 
 document.addEventListener('DOMContentLoaded', function () {
-  var elems = document.querySelectorAll('.tooltipped')
-  var instances = M.Tooltip.init(elems)
+  const elems = document.querySelectorAll('.tooltipped')
+  const instances = M.Tooltip.init(elems)
   populateSettings()
 })
 

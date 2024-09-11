@@ -134,8 +134,8 @@ export default class NoiseGenerator {
   }
 
   grad(hash: number, x: number, y: number, z: number): number {
-    let h: number = Math.floor(hash) & 15 // CONVERT LO 4 BITS OF HASH CODE
-    let u: number = h < 8 ? x : y, // INTO 12 this.gradIENT DIRECTIONS.
+    const h: number = Math.floor(hash) & 15 // CONVERT LO 4 BITS OF HASH CODE
+    const u: number = h < 8 ? x : y, // INTO 12 this.gradIENT DIRECTIONS.
       v = h < 4 ? y : h == 12 || h == 14 ? x : z
     return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v)
   }
