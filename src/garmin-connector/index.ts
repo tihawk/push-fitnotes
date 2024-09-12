@@ -19,11 +19,11 @@ export class GarminConnector {
     // Create a new Garmin Connect Client
     // Uses credentials from garmin.config.json or uses supplied params
     let credentials: GCCredentials = undefined
-    this.config.username
-      ? (credentials = {
+    credentials = this.config.username
+      ? {
           username: this.config.username,
           password: this.config.password,
-        })
+        }
       : undefined
     this.GCClient = new GarminConnect(credentials)
   }
@@ -32,7 +32,7 @@ export class GarminConnector {
     return await this.GCClient.login(this.config.username, this.config.password)
   }
 
-  async uploadActivity(filename) {
+  async uploadActivity(filename: string) {
     // In development the program is ran from a different folder from where java stores .fit files
     const filepath = path.resolve(
       process.env.NODE_ENV === 'development' ? process.cwd() : app.getAppPath(),
@@ -40,7 +40,6 @@ export class GarminConnector {
       filename
     )
     this.logger('attempting to upload', filepath)
-    // @ts-ignore
     const upload = await this.GCClient.uploadActivity(filepath)
     this.logger(upload)
     return upload

@@ -29,11 +29,19 @@ async function populateSettings() {
     const usernameEl = document.getElementById('username') as HTMLInputElement
     usernameEl.value = settings.garminCredentials?.username || ''
     usernameEl.onchange = (e) =>
-      updateValue(e, settings.garminCredentials, 'username')
+      updateValue(
+        e.target as HTMLInputElement,
+        settings.garminCredentials,
+        'username'
+      )
     const passwordEl = document.getElementById('password') as HTMLInputElement
     passwordEl.value = settings.garminCredentials?.password || ''
     passwordEl.onchange = (e) =>
-      updateValue(e, settings.garminCredentials, 'password')
+      updateValue(
+        e.target as HTMLInputElement,
+        settings.garminCredentials,
+        'password'
+      )
 
     const outputDirBtn = document.getElementById(
       'output-dir'
@@ -49,7 +57,11 @@ async function populateSettings() {
     const avgHrEl = document.getElementById('avg-heartrate') as HTMLInputElement
     avgHrEl.value = settings.exportData?.defaultAvgHeartrate?.toString()
     avgHrEl.onchange = (e) => {
-      updateValue(e, settings.exportData, 'defaultAvgHeartrate')
+      updateValue(
+        e.target as HTMLInputElement,
+        settings.exportData,
+        'defaultAvgHeartrate'
+      )
     }
 
     const shouldGenerateHeartrateEl = document.getElementById(
@@ -58,24 +70,34 @@ async function populateSettings() {
     shouldGenerateHeartrateEl.checked =
       settings.exportData?.shouldGenerateHeartrate
     shouldGenerateHeartrateEl.onchange = (e) => {
-      updateCheckbox(e, settings.exportData, 'shouldGenerateHeartrate')
+      updateCheckbox(
+        e.target as HTMLInputElement,
+        settings.exportData,
+        'shouldGenerateHeartrate'
+      )
     }
 
     const defActiveTimeEl = document.getElementById(
       'active-time'
     ) as HTMLInputElement
-    // @ts-ignore
-    defActiveTimeEl.value = settings.exportData?.defaultActiveTime
+    defActiveTimeEl.value = settings.exportData?.defaultActiveTime.toString()
     defActiveTimeEl.onchange = (e) =>
-      updateValue(e, settings.exportData, 'defaultActiveTime')
+      updateValue(
+        e.target as HTMLInputElement,
+        settings.exportData,
+        'defaultActiveTime'
+      )
 
     const defRestTimeEl = document.getElementById(
       'rest-time'
     ) as HTMLInputElement
-    // @ts-ignore
-    defRestTimeEl.value = settings.exportData?.defaultRestTime
+    defRestTimeEl.value = settings.exportData?.defaultRestTime.toString()
     defRestTimeEl.onchange = (e) =>
-      updateValue(e, settings.exportData, 'defaultRestTime')
+      updateValue(
+        e.target as HTMLInputElement,
+        settings.exportData,
+        'defaultRestTime'
+      )
 
     const saveButtonEl = document.getElementById('save-settings')
     saveButtonEl.onclick = (e) => saveSettings(settings)

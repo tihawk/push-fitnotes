@@ -356,38 +356,39 @@ async function handleUploadWorkout(
       response.message = "Couldn't log into Garmin Connect"
     })
 
-  //  try {
-  //    // login unsuccessful if no user hash
-  //    if (!gc || !gc.userHash) {
-  //      return { success: false, message: "Couldn't log into Garmin Connect" }
-  //    }
-  //  } catch (err) {
-  //    console.error(err)
-  //    return { success: false, message: "Couldn't log into Garmin Connect" }
-  //  }
+  try {
+    // login unsuccessful if no user hash
+    if (!gc) {
+      return { success: false, message: "Couldn't log into Garmin Connect" }
+    }
+  } catch (err) {
+    console.error(err)
+    return { success: false, message: "Couldn't log into Garmin Connect" }
+  }
 
-  const result = await connector
+  await connector
     .uploadActivity(message.meta.fitFilename)
-    .then((res: any) => {
+    .then((res) => {
+      // uploadid is not the activityid ;(
+      // response.message = response.message.concat(`<br/><a href="https://connect.garmin.com/modern/activity/${res.detailedImportResult.uploadId}">View workout here</a>`)
+    })
+    .catch((err) => {
+      const res = JSON.parse(err.message.split(', ')[2])
       if (res.detailedImportResult.failures.length) {
         response.success = false
         response.message = res.detailedImportResult.failures
           .map((fail) => fail.messages.map((mes) => mes.content).join('\n'))
           .join('\n')
       } else {
-        // uploadid is not the activityid ;(
-        // response.message = response.message.concat(`<br/><a href="https://connect.garmin.com/modern/activity/${res.detailedImportResult.uploadId}">View workout here</a>`)
+        response.success = false
+        response.message = 'Failed uploading file'
       }
-    })
-    .catch((err) => {
-      response.success = false
-      response.message = 'Failed uploading file'
     })
 
   return response
 }
 
-function handleGetSetting(event, message) {
+function handleGetSetting(event, message: string) {
   return settings.getSync(message)
 }
 
@@ -496,6 +497,7 @@ async function getOrCreateOutputDir() {
       .then((res) => {
         console.log(res)
         if (res.canceled) {
+          // cancelled
         } else {
           if (res.filePaths.length) {
             outputDir = res.filePaths[0]

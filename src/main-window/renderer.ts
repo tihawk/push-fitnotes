@@ -42,13 +42,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 let workouts: WorkoutT[]
 
-window.electronAPI.onGeneralIsLoading((e, message) => {
+window.electronAPI.onGeneralIsLoading((e, message: MessageT) => {
   Progress.fire({
     text: message.message,
   })
 })
 
-window.electronAPI.onLoadedCSVData((e, message) => {
+window.electronAPI.onLoadedCSVData((e, message: MessageT) => {
   Toast.fire({
     text: message.message,
     icon: message.success ? 'success' : 'error',
@@ -92,7 +92,7 @@ async function validateSettings() {
     Promise<SettingsT['garminCredentials']>
   >window.electronAPI.getSetting('garminCredentials'))
   if (!username || !password) {
-    const noGarminCredentialsNotification = new NotificationElement({
+    new NotificationElement({
       level: 'warning',
       message:
         "You haven't set up your Garmin Credentials yet. You won't be able to upload any workouts to Garmin Connect, until you do. Go to File > Settings to set up your Garmin Connect credentials. Note, that these will be only stored locally, and won't be used for anything else beyond what this app provides as functionality.",

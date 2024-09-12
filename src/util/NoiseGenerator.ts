@@ -69,7 +69,10 @@ export default class NoiseGenerator {
     // return Math.min(Math.max(resultInRange, -32768), 32767); // return between SHORT_MIN and SHORT_MAX
   }
 
-  smoothNoise(x: number, y: number, z: number): number {
+  smoothNoise(_x: number, _y: number, _z: number): number {
+    let x = _x
+    let y = _y
+    let z = _z
     // Offset each coordinate by the seed value
     x += this.seed
     y += this.seed
@@ -84,7 +87,7 @@ export default class NoiseGenerator {
     z -= Math.floor(z)
 
     const u: number = this.fade(x) // COMPUTE FADE CURVES
-    const v: number = this.fade(y) // FOR EACH OF X,Y,Z.
+    const v: number = this.fade(y) // FOR EACH OF X,Y,Z
     const w: number = this.fade(z)
 
     const A = this.p[X] + Y
@@ -135,8 +138,8 @@ export default class NoiseGenerator {
 
   grad(hash: number, x: number, y: number, z: number): number {
     const h: number = Math.floor(hash) & 15 // CONVERT LO 4 BITS OF HASH CODE
-    const u: number = h < 8 ? x : y, // INTO 12 this.gradIENT DIRECTIONS.
-      v = h < 4 ? y : h == 12 || h == 14 ? x : z
-    return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v)
+    const u: number = h < 8 ? x : y // INTO 12 this.gradient DIRECTIONS.
+    const v = h < 4 ? y : h === 12 || h === 14 ? x : z
+    return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v)
   }
 }

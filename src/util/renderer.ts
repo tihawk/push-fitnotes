@@ -21,18 +21,16 @@ export const Toast = Swal.mixin({
   },
 })
 
-export function updateValue(e: Event, object, key, ref?) {
-  // @ts-ignore
-  object[key] = e.target.value
-  ref && ref.render()
+export function updateValue(target: HTMLInputElement, object, key, ref?) {
+  object[key] = target.value
+  ref?.render()
 
   initCollapsible()
 }
 
-export function updateCheckbox(e: Event, object, key, ref?) {
-  // @ts-ignore
-  object[key] = e.target.checked
-  ref && ref.render()
+export function updateCheckbox(target: HTMLInputElement, object, key, ref?) {
+  object[key] = target.checked
+  ref?.render()
 
   initCollapsible()
 }

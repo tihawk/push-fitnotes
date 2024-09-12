@@ -3,7 +3,7 @@ import { FitConstants } from 'fit-encoder'
 
 const exerciseCategory = FitConstants['exercise_category']
 
-export function getKeyByValue(object, value) {
+export function getKeyByValue(object: object, value: string | number) {
   return Object.keys(object).find((key) => object[key] === value)
 }
 
@@ -187,13 +187,13 @@ export const EXERCISE_TO_FIT_CATEGORY_MAP: FitNotesToFitDicT = {
     subCategory:
       FitConstants['shoulder_press_exercise_name']['barbell_push_press'],
   },
-  // none?
+  // None?
   'Behind The Neck Barbell Press': {
     category: FitConstants['exercise_category']['shoulder_press'],
     subCategory:
       FitConstants['shoulder_press_exercise_name']['overhead_barbell_press'],
   },
-  // maybe?
+  // Maybe?
   'Hammer Strength Shoulder Press': {
     category: FitConstants['exercise_category']['shoulder_press'],
     subCategory:
@@ -206,7 +206,7 @@ export const EXERCISE_TO_FIT_CATEGORY_MAP: FitNotesToFitDicT = {
     subCategory:
       FitConstants['lateral_raise_exercise_name']['seated_lateral_raise'],
   },
-  // kinda
+  // Kinda
   'Lateral Machine Raise': {
     category: FitConstants['exercise_category']['shoulder_press'],
     subCategory:
@@ -217,7 +217,7 @@ export const EXERCISE_TO_FIT_CATEGORY_MAP: FitNotesToFitDicT = {
     subCategory:
       FitConstants['lateral_raise_exercise_name']['bent_over_lateral_raise'],
   },
-  // not really
+  // Not really
   'Rear Delt Machine Fly': {
     category: FitConstants['exercise_category']['flye'],
     subCategory: FitConstants['flye_exercise_name']['incline_dumbbell_flye'],
@@ -235,7 +235,7 @@ export const EXERCISE_TO_FIT_CATEGORY_MAP: FitNotesToFitDicT = {
     category: FitConstants['exercise_category']['row'],
     subCategory: FitConstants['row_exercise_name']['face_pull'],
   },
-  // ye na ye
+  // Ye na ye
   'Log Press': {
     category: FitConstants['exercise_category']['shoulder_press'],
     subCategory:
@@ -307,7 +307,7 @@ export const EXERCISE_TO_FIT_CATEGORY_MAP: FitNotesToFitDicT = {
     subCategory:
       FitConstants['curl_exercise_name']['incline_dumbbell_biceps_curl'],
   },
-  // well...
+  // Well...
   'Seated Machine Curl': {
     category: FitConstants['exercise_category']['curl'],
     subCategory:
@@ -354,19 +354,19 @@ export const EXERCISE_TO_FIT_CATEGORY_MAP: FitNotesToFitDicT = {
     category: FitConstants['exercise_category']['flye'],
     subCategory: FitConstants['flye_exercise_name']['cable_crossover'],
   },
-  // close enough
+  // Close enough
   'Incline Hammer Strength Chest Press': {
     category: FitConstants['exercise_category']['bench_press'],
     subCategory:
       FitConstants['bench_press_exercise_name']['incline_barbell_bench_press'],
   },
-  // again close enough
+  // Again close enough
   'Decline Hammer Strength Chest Press': {
     category: FitConstants['exercise_category']['bench_press'],
     subCategory:
       FitConstants['bench_press_exercise_name']['decline_dumbbell_bench_press'],
   },
-  // nope
+  // Nope
   'Seated Machine Fly': {
     category: FitConstants['exercise_category']['flye'],
     subCategory: FitConstants['flye_exercise_name']['dumbbell_flye'],
@@ -379,17 +379,17 @@ export const EXERCISE_TO_FIT_CATEGORY_MAP: FitNotesToFitDicT = {
     category: FitConstants['exercise_category']['pull_up'],
     subCategory: FitConstants['pull_up_exercise_name']['close_grip_chin_up'],
   },
-  // dunno
+  // Dunno
   'Neutral Chin Up': {
     category: FitConstants['exercise_category']['pull_up'],
     subCategory: FitConstants['pull_up_exercise_name']['close_grip_chin_up'],
   },
-  // not at all
+  // Not at all
   'Pendlay Row': {
     category: FitConstants['exercise_category']['row'],
     subCategory: FitConstants['row_exercise_name']['reverse_grip_barbell_row'],
   },
-  // close enough?
+  // Close enough?
   'Hammer Strength Row': {
     category: FitConstants['exercise_category']['row'],
     subCategory: FitConstants['row_exercise_name']['seated_cable_row'],
@@ -406,12 +406,12 @@ export const EXERCISE_TO_FIT_CATEGORY_MAP: FitNotesToFitDicT = {
     category: FitConstants['exercise_category']['shrug'],
     subCategory: FitConstants['shrug_exercise_name']['barbell_shrug'],
   },
-  // na ya
+  // Na ya
   'Machine Shrug': {
     category: FitConstants['exercise_category']['shrug'],
     subCategory: FitConstants['shrug_exercise_name']['barbell_shrug'],
   },
-  // nope
+  // Nope
   'Straight-Arm Cable Pushdown': {
     category: FitConstants['exercise_category']['triceps_extension'],
     subCategory:
@@ -433,17 +433,17 @@ export const EXERCISE_TO_FIT_CATEGORY_MAP: FitNotesToFitDicT = {
     category: FitConstants['exercise_category']['squat'],
     subCategory: FitConstants['squat_exercise_name']['leg_press'],
   },
-  // not a machine. i'm getting tired
+  // Not a machine. I'm getting tired
   'Leg Extension Machine': {
     category: FitConstants['exercise_category']['crunch'],
     subCategory: FitConstants['crunch_exercise_name']['leg_extensions'],
   },
-  // not a machine
+  // Not a machine
   'Seated Leg Curl Machine': {
     category: FitConstants['exercise_category']['leg_curl'],
     subCategory: FitConstants['leg_curl_exercise_name']['weighted_leg_curl'],
   },
-  // not a machine
+  // Not a machine
   'Standing Calf Raise Machine': {
     category: FitConstants['exercise_category']['calf_raise'],
     subCategory:
@@ -457,7 +457,7 @@ export const EXERCISE_TO_FIT_CATEGORY_MAP: FitNotesToFitDicT = {
     category: FitConstants['exercise_category']['calf_raise'],
     subCategory: FitConstants['calf_raise_exercise_name']['donkey_calf_raise'],
   },
-  // not at all
+  // Not at all
   'Glute-Ham Raise': {
     category: FitConstants['exercise_category']['leg_curl'],
     subCategory: FitConstants['leg_curl_exercise_name']['weighted_leg_curl'],
@@ -487,12 +487,12 @@ export const EXERCISE_TO_FIT_CATEGORY_MAP: FitNotesToFitDicT = {
     category: FitConstants['exercise_category']['crunch'],
     subCategory: FitConstants['crunch_exercise_name']['crunch'],
   },
-  // not a machine
+  // Not a machine
   'Crunch Machine': {
     category: FitConstants['exercise_category']['crunch'],
     subCategory: FitConstants['crunch_exercise_name']['crunch'],
   },
-  // i guess
+  // I guess
   'Decline Crunch': {
     category: FitConstants['exercise_category']['crunch'],
     subCategory: FitConstants['crunch_exercise_name']['reverse_crunch'],
