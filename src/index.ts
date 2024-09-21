@@ -20,7 +20,6 @@ import path from 'path'
 import { CSVParser } from './csv-parser'
 import {
   CSV_DIR,
-  OUTFIT_DIR,
   SETTINGS_EXPORT_DATA,
   SETTINGS_GARMIN_CREDENTIALS,
 } from './util/constants'
@@ -100,6 +99,8 @@ app.on('ready', () => {
   ipcMain.handle('get-all-settings', handleGetAllSettings)
   ipcMain.handle('set-setting', handleSetSetting)
   ipcMain.handle('select-export-dir', handleSelectExportDir)
+  ipcMain.handle('convert-workouts', handleConvertWorkouts)
+  ipcMain.handle('upload-workouts', handleUploadWorkouts)
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -239,6 +240,20 @@ function handleQuickConvert() {
     loadCSV(filepath, (workouts: WorkoutT[]) => convertWorkouts(workouts))
   )
 }
+
+async function handleConvertWorkouts(
+  event,
+  message: WorkoutT[]
+): Promise<MessageT> {
+  const response: MessageT = {
+    success: true,
+    message: 'Successfully converted selected workouts.',
+  }
+  await convertWorkouts(message)
+  return response
+}
+
+function handleUploadWorkouts(workouts: WorkoutT[]) {}
 
 /* MAIN FUNCTIONS THAT DO STUFF */
 

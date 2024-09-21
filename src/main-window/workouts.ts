@@ -69,13 +69,15 @@ class WorkoutElement extends HTMLElement {
       'input.select-workout'
     )
     selectWorkoutCheckbox.checked = this.workout.meta.selected
-    selectWorkoutCheckbox.onchange = (e) =>
+    selectWorkoutCheckbox.onchange = (e) => {
       this.updateCheckbox(
         e.target as HTMLInputElement,
         this.workout.meta,
         'selected',
         this
       )
+      document.body.querySelector('bulk-control-wrapper')?.render()
+    }
 
     const convertWorkoutBtn: HTMLButtonElement = workoutEl.querySelector(
       'button[name=convert]'
@@ -106,6 +108,7 @@ class WorkoutElement extends HTMLElement {
     this.workout.meta.converted = !!filename
     this.workout.meta.fitFilename = filename
     this.render()
+    document.body.querySelector('bulk-control-wrapper')?.render()
     initCollapsible()
   }
 
@@ -115,6 +118,7 @@ class WorkoutElement extends HTMLElement {
     const success = await uploadWorkout(this.workout)
     this.workout.meta.uploaded = success
     this.render()
+    document.body.querySelector('bulk-control-wrapper')?.render()
     initCollapsible()
   }
 }

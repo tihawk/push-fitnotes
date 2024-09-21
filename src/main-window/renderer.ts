@@ -66,6 +66,19 @@ window.electronAPI.onDisplayMessage((e, message) => {
   Swal.fire(message)
 })
 
+export async function convertWorkouts(workouts: WorkoutT[]): Promise<boolean> {
+  Progress.fire()
+  const message: MessageT = await window.electronAPI.convertWorkouts(workouts)
+  Toast.fire({
+    icon: message.success ? 'success' : 'error',
+    title: message.success ? 'Success!' : 'Failed!',
+    text: message.success
+      ? 'You can now upload your workouts to Garmin Connect!'
+      : message.message,
+  })
+  return message.success
+}
+
 export async function convertWorkout(workout: WorkoutT): Promise<string> {
   Progress.fire()
   const message: MessageT = await window.electronAPI.convertWorkout(workout)

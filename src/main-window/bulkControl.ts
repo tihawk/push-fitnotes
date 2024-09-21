@@ -1,9 +1,5 @@
 import { SettingsT, WorkoutT } from '../util/interfaces'
-import {
-  convertWorkout,
-  getExportDataSettings,
-  uploadWorkout,
-} from './renderer'
+import { convertWorkouts, getExportDataSettings } from './renderer'
 import {
   EXERCISE_TO_FIT_CATEGORY_MAP,
   getNamesFromDictValue,
@@ -32,19 +28,44 @@ export class BulkControl extends HTMLElement {
     this.appendChild(bulkControlNode)
 
     // Append bulk control buttons
-    //    const bulkControlEl = this.lastElementChild
 
-    //    const convertWorkoutBtn: HTMLButtonElement = bulkControlEl.querySelector(
-    //      'button[name=bulk_convert]'
-    //    )
-    //    //convertWorkoutBtn.onclick = (e) => this.handleConvertWorkout(e)
-    //
-    //    const uploadWorkoutBtn: HTMLButtonElement = bulkControlEl.querySelector(
-    //      'button[name=bulk_upload]'
-    //    )
-    //uploadWorkoutBtn.disabled =
-    //  !this.workout.meta.converted || this.workout.meta.uploaded
+    const bulkConvertBtn: HTMLButtonElement = this.querySelector(
+      'button[name=bulk-convert]'
+    )
+    bulkConvertBtn.innerText = `Convert Selected (${
+      this.getSelectedWorkouts().length
+    })`
+    bulkConvertBtn.disabled = !this.getSelectedWorkouts().length
+    bulkConvertBtn.onclick = (e) => this.handleBulkConvert(e)
+
+    const bulkUploadBtn: HTMLButtonElement = this.querySelector(
+      'button[name=bulk-upload]'
+    )
+    bulkUploadBtn.disabled = this.isUploadDisabled()
+    bulkUploadBtn.innerText = `Upload Selected (${
+      this.getSelectedWorkouts().filter((wo) => wo.meta.converted).length
+    })`
     //uploadWorkoutBtn.onclick = (e) => this.handleUploadWorkout(e)
+  }
+
+  async handleBulkConvert(e) {
+    const success = await convertWorkouts(this.getSelectedWorkouts())
+    if (success) {
+      this.workouts.forEach((wo) => {
+        if (wo.meta.selected) wo.meta.converted = true
+      })
+    }
+    this.render()
+  }
+
+  getSelectedWorkouts() {
+    return this.workouts.filter((wo) => wo.meta.selected)
+  }
+
+  isUploadDisabled() {
+    return this.getSelectedWorkouts().every(
+      (wo) => !wo.meta.converted || wo.meta.uploaded
+    )
   }
 }
 
