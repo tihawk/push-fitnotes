@@ -70,7 +70,12 @@ class WorkoutElement extends HTMLElement {
     )
     selectWorkoutCheckbox.checked = this.workout.meta.selected
     selectWorkoutCheckbox.onchange = (e) =>
-      this.updateCheckbox(e, this.workout.meta, 'selected', this)
+      this.updateCheckbox(
+        e.target as HTMLInputElement,
+        this.workout.meta,
+        'selected',
+        this
+      )
 
     const convertWorkoutBtn: HTMLButtonElement = workoutEl.querySelector(
       'button[name=convert]'
@@ -138,14 +143,24 @@ class ExerciseElement extends HTMLElement {
       exerciseEl.querySelector('input.csvName')
     csvNameEl.value = this.exercise.fitnotesName
     csvNameEl.onchange = (e) =>
-      this.updateValue(e, this.exercise, 'fitnotesName', this)
+      this.updateValue(
+        e.target as HTMLInputElement,
+        this.exercise,
+        'fitnotesName',
+        this
+      )
     const fitNameEl: HTMLInputElement =
       exerciseEl.querySelector('input.fitName')
     fitNameEl.value = getNamesFromDictValue(
       EXERCISE_TO_FIT_CATEGORY_MAP[this.exercise.fitnotesName]
     ).subCategory //this.exercise.fitName?.toString()
     fitNameEl.onchange = (e) =>
-      this.updateValue(e, this.exercise, 'fitName', this)
+      this.updateValue(
+        e.target as HTMLInputElement,
+        this.exercise,
+        'fitName',
+        this
+      )
 
     // Append sets for each exercise
     const setsContainerEl = exerciseEl.querySelector('div.sets')
@@ -187,18 +202,22 @@ class SetElement extends HTMLElement {
     weightLabel.innerText = `Weight (${this.set.unit === 1 ? 'kgs' : 'lbs'})`
     const weightEl: HTMLInputElement = setEl.querySelector('input.weight')
     weightEl.value = this.set.weight.toString()
-    weightEl.onchange = (e) => this.updateValue(e, this.set, 'weight', this)
+    weightEl.onchange = (e) =>
+      this.updateValue(e.target as HTMLInputElement, this.set, 'weight', this)
     const repsEl: HTMLInputElement = setEl.querySelector('input.reps')
     repsEl.value = this.set.reps.toString()
-    repsEl.onchange = (e) => this.updateValue(e, this.set, 'reps', this)
+    repsEl.onchange = (e) =>
+      this.updateValue(e.target as HTMLInputElement, this.set, 'reps', this)
     const timeEl: HTMLInputElement = setEl.querySelector('input.time')
     timeEl.placeholder = this.settings?.defaultActiveTime?.toString()
     timeEl.value = this.set.time?.toString()
-    timeEl.onchange = (e) => this.updateValue(e, this.set, 'time', this)
+    timeEl.onchange = (e) =>
+      this.updateValue(e.target as HTMLInputElement, this.set, 'time', this)
     const restTimeEl: HTMLInputElement = setEl.querySelector('input.rest-time')
     restTimeEl.placeholder = this.settings?.defaultRestTime?.toString()
     restTimeEl.value = this.set.restTime?.toString()
-    restTimeEl.onchange = (e) => this.updateValue(e, this.set, 'restTime', this)
+    restTimeEl.onchange = (e) =>
+      this.updateValue(e.target as HTMLInputElement, this.set, 'restTime', this)
   }
 
   updateValue = updateValue

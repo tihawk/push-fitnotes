@@ -34,6 +34,7 @@ import M from 'materialize-css'
 import 'material-icons'
 import { NotificationElement } from './notification'
 import { initCollapsible, Progress, Toast } from '../util/renderer'
+import { BulkControl } from './bulkControl'
 
 document.addEventListener('DOMContentLoaded', function () {
   validateSettings()
@@ -54,6 +55,8 @@ window.electronAPI.onLoadedCSVData((e, message: MessageT) => {
     icon: message.success ? 'success' : 'error',
   })
   workouts = message.data
+  const bulkControlEl = new BulkControl(workouts)
+  document.body.appendChild(bulkControlEl)
   const workoutsEl = new Workouts(workouts)
   document.body.appendChild(workoutsEl)
   initCollapsible()
